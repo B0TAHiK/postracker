@@ -16,12 +16,11 @@
                 $keyIDarr[] = $row[keyID];
                 $vCodearr[] = $row[vCode];                
         }
-        $keyID = $keyIDarr[$k];
-        $vCode = $vCodearr[$k];
         //Running script for each API...
         for ($k = 0; $k < count($keyIDarr); $k++) {
             //Getting XML...
-            
+            $keyID = $keyIDarr[$k];
+            $vCode = $vCodearr[$k];
             $api = api_req($page, $keyID, $vCode, '', '');
             $i=0;
             //Parsing XML...
