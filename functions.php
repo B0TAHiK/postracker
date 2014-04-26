@@ -75,7 +75,7 @@
             $i++;
             endforeach;
 
-            $i=0;
+            //$i=0;
             //Getting names from CCP MySQL DB...
             for ($i = 0; $i < count($data); $i++) {
                 $moonID = $data[$i][moonID];
@@ -91,13 +91,13 @@
                 print(mysql_error());
                 $data[$i]['typeName'] = mysql_result($result, 0);     
                 // Comment next 5 strings if you don't wish to have debug information on the screen.
-                foreach ($data[$i] as $row) {
+                /*foreach ($data[$i] as $row) {
                 echo $row, "<br>";    
-            };
-            echo "<br>";
+                };
+                echo "<br>";*/
             }
             //Adding information to the DB...
-            $i=0;
+            //$i=0;
             for ($i = 0; $i < count($data); $i++) {
                 $moonID = $data[$i][moonID];
                 $typeID = $data[$i][typeID];
