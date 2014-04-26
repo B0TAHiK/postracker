@@ -1,6 +1,6 @@
 <?php
         //Requiring some libs...
         require_once 'functions.php';
-        parseStarbaseList();
+        echo parseStarbaseList();
         parseStarbaseDetails();
 ?>
