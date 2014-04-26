@@ -37,13 +37,24 @@
         return $rfTime;
     }
     function parseStarbaseList() {
+        $msg .= date(DATE_RFC822);
+        $msg .= "<br/>[" . str_repeat("=",100) . "]";
         //Requiring some libs...
         require 'db_con.php';
         require_once 'functions.php';
         //Connecting to DB...
-        mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-        mysql_select_db($db_name) or die(mysql_error());
+        $msg .= "<br/>Connecting to DB... ";
+        mysql_connect($hostname, $username, $mysql_pass);
+        if(!mysql_error()) {
+            mysql_select_db($db_name);
+            if(!mysql_error()) $msg .= "[ok]"; else{
+                $msg .= mysql_error(); exit;
+            } 
+        } else {
+            $msg .= mysql_error(); exit;
+        }
         //StarbaseList parsing...
+        $msg .= "<br/>Collecting API keys... ";
         $page = "https://api.eveonline.com/corp/StarbaseList.xml.aspx";
         $query = "SELECT * FROM `apilist`";
         $result = mysql_query($query);
@@ -54,15 +65,24 @@
                 $keyIDarr[] = $row[keyID];
                 $vCodearr[] = $row[vCode];                
         }
+        if( count( $keyIDarr ) > 0 ){
+            $msg .= " found " . count( $keyIDarr ) . " API keys";
+        }else{
+            $msg .= " found none";
+            exit;
+        }
         //Running script for each API...
         for ($k = 0; $k < count($keyIDarr); $k++) {
             //Getting XML...
+            //$msg .= "<br/>Parsing StarbaseList.xml for key " . $k+1;
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
             $api = api_req($page, $keyID, $vCode, '', '');
             $i=0;
             //Parsing XML...
+            $msg .= "<br/>Parsing POS ids";
             foreach ( $api->result->rowset->row as $row):
+                $msg .= ", " . strval($row[itemID]);
                 $data[$i] = array(
                     'posID' => strval($row[itemID]),
                     'typeID' => strval($row[typeID]),
@@ -81,14 +101,20 @@
                 $moonID = $data[$i][moonID];
                 $typeID = $data[$i][typeID];
                 //Getting moon coordinates...
+                $msg .= "<br/>Getting moon coordinates for moon id " . $moonID . "... ";
                 $query = "SELECT `itemName` FROM  `mapDenormalize` WHERE `itemID`='$moonID' LIMIT 1";
                 $result = mysql_query($query);
-                print(mysql_error());
+                if(!mysql_error()) $msg .= "[ok]"; else{
+                    $msg .= mysql_error(); exit;
+                } 
                 $data[$i]['moonName'] = mysql_result($result, 0);
                 //Getting CT type...
+                $msg .= "<br/>Getting CT type for moon id " . $moonID . "... ";
                 $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='$typeID' LIMIT 1";
                 $result = mysql_query($query);
-                print(mysql_error());
+                if(!mysql_error()) $msg .= "[ok]"; else{
+                    $msg .= mysql_error(); exit;
+                } 
                 $data[$i]['typeName'] = mysql_result($result, 0);     
                 // Comment next 5 strings if you don't wish to have debug information on the screen.
                 /*foreach ($data[$i] as $row) {
@@ -109,9 +135,12 @@
                 $typeName = $data[$i][typeName];
 //                $ownerID = $data[$i][ownerID];
                 //Checking for obsolete records...
+                $msg .= "<br/>Checking for obsolete records for POS id " . $posID . "... ";
                 $query = "SELECT `posID` FROM `poslist`";
                 $result = mysql_query($query);
-                print(mysql_error());
+                if(!mysql_error()) $msg .= "[ok]"; else{
+                    $msg .= mysql_error(); exit;
+                }
                 
                 $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
                 $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
@@ -126,23 +155,34 @@
                     }
                 }
                 // Looking for old records...
+                $msg .= "<br/>Looking for old records for POS id " . $posID . "... ";
                 $query = "SELECT `posID` FROM `poslist` WHERE `posID`='$posID' LIMIT 1";
                 $result = mysql_query($query);
-                print(mysql_error());
+                if(!mysql_error()) $msg .= "[ok]"; else{
+                    $msg .= mysql_error(); exit;
+                }
                 $num = mysql_num_rows($result);
                 //If found, updating...
                 if ($num === 1) {
+                    $msg .= "<br/>Found old record for " . $posID . ", updating... ";
                     $query = "UPDATE `poslist` SET `state` = '$state', `stateTimestamp` = '$stateTimestamp' WHERE `posID`='$posID'";
                     $result = mysql_query($query);
-                    print(mysql_error());
+                    if(!mysql_error()) $msg .= "[ok]"; else{
+                        $msg .= mysql_error(); exit;
+                    }
                 } else {
                 //If not, creating new row...
+                    $msg .= "<br/>Not found old record for " . $posID . ", creating new... ";
                     $query = "INSERT INTO `poslist` SET `posID`= '$posID', `typeID` = '$typeID', `locationID` = '$locationID', `moonID` = '$moonID', `state` = '$state', `stateTimestamp` = '$stateTimestamp', `moonName` = '$moonName', `typeName` = '$typeName', `ownerID` = '$ownerID'";
                     $result = mysql_query($query);
-                    print(mysql_error());
+                    if(!mysql_error()) $msg .= "[ok]"; else{
+                        $msg .= mysql_error(); exit;
+                    } 
                 };
             }
             //StarbaseList parsing finished
+            $msg .= "<br/>[" . str_repeat("=",100) . "]";
+            return $msg;
         }
         return $Message;
     }
