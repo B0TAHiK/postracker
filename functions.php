@@ -69,8 +69,8 @@
                     'locationID' => strval($row[locationID]),
                     'moonID' => strval($row[moonID]),
                     'state' => strval($row[state]),
-                    'stateTimestamp' => strval($row[stateTimestamp]),
-                    'ownerID' => strval($row[standingOwnerID])
+                    'stateTimestamp' => strval($row[stateTimestamp])
+//                    'ownerID' => strval($row[standingOwnerID])
                 );
             $i++;
             endforeach;
@@ -107,17 +107,21 @@
                 $stateTimestamp = $data[$i][stateTimestamp];
                 $moonName = $data[$i][moonName];
                 $typeName = $data[$i][typeName];
-                $ownerID = $data[$i][ownerID];
+//                $ownerID = $data[$i][ownerID];
                 //Checking for obsolete records...
                 $query = "SELECT `posID` FROM `poslist`";
                 $result = mysql_query($query);
                 print(mysql_error());
+                
+                $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
+                $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+                $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
                 while($poslist = mysql_fetch_array($result , MYSQL_NUM)){
                     for($j=0;$j<=count($data);$j++){
                         if($data[$j]['posID']==$poslist[0]) break;
                         if($j==count($data)){
                             //Deleting obsolete records, if found...
-                            mysql_query("DELETE FROM `poslist` WHERE `posID`='{$poslist[0]}'");			
+                            mysql_query("DELETE FROM `poslist` WHERE `posID`='{$poslist[0]}' AND `ownerID` = '$ownerID'");			
                         }
                     }
                 }
@@ -139,8 +143,8 @@
                 };
             }
             //StarbaseList parsing finished
-        return $Message;
         }
+        return $Message;
     }
     function parseStarbaseDetails() {
         //Requiring some libs...
@@ -163,12 +167,14 @@
             //Getting XML...
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
-            $api = api_req($page, $keyID, $vCode, '', '');
+            $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
+            $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+            $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
             $i=0;
             $page = "https://api.eveonline.com/corp/Starbasedetail.xml.aspx";
             $idkind = "itemID";
             //Getting POS list...
-            $query = "SELECT `posID` FROM `poslist`";
+            $query = "SELECT `posID` FROM `poslist` WHERE `ownerID` = '$ownerID'";
             $result = mysql_query($query);
             print(mysql_error());
             $posID = array();
@@ -178,10 +184,10 @@
             //Running script for each POS...
             foreach ($posID as $posIDQuery):
                 //Getting API information...
-                $api = api_req($page, $keyID, $vCode, $idkind, $posIDQuery);
+                $apiPosDetails = api_req($page, $keyID, $vCode, $idkind, $posIDQuery);
                 $i=0;
                 //Parsing XML...
-                foreach ( $api->result->rowset->row as $row):
+                foreach ( $apiPosDetails->result->rowset->row as $row):
                     $data[$i] = array (
                         'posFuelID' => strval($row[typeID]),
                         'posFuelQuantity' => strval($row[quantity])
