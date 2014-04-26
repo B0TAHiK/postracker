@@ -2,3 +2,4 @@
 /mapSolarSystems.sql
 /invTypes.sql
 /invControlTowerResources.sql
+/db_con.php
