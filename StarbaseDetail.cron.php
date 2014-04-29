@@ -4,7 +4,6 @@
         $msg = date(DATE_RFC822) . "<br/>[" . str_repeat("=",100) . "]";
         //Requiring some libs...
         require 'db_con.php';
-        require_once 'functions.php';
         //Connecting to DB...
         $msg .= "<br/>Connecting to DB... ";
         mysql_connect($hostname, $username, $mysql_pass);
