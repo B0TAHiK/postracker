@@ -26,6 +26,7 @@
         if( count( $keyIDarr ) > 0 ) $msg .= " found " . count( $keyIDarr ) . " API keys"; else endlog($msg . " found none");
         //Running script for each API...
         for ($k = 0; $k < count($keyIDarr); $k++) {
+            unset($data);
             //Getting XML...
             //$msg .= "<br/>Parsing StarbaseList.xml for key " . $k+1;
             $keyID = $keyIDarr[$k];
