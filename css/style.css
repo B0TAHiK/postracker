@@ -1,15 +1,75 @@
 body {
-    background-color: #EEEEEE;
+    background-color: #440808;
+}
+div#head {
+    background: url(../header.png) repeat-x;
+    height: 110px;
+    margin:0px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.logo {
+    margin-top: 20px;
 }
 div#wrapper {
-        width:999px;
+        width: 80%;
 	margin-left: auto;
 	margin-right: auto;
         border-radius: 5px;
-        background: white;
-        padding: 5px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-top: 5px;
+        background-color: #f4f4f4;
 }
-
+div#bar {
+    height: 20px;
+    margin:0 auto;
+    border-radius: 5px;
+}
+ul#bar {
+	list-style: none;
+	width: 99%;
+        height: 24px;
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 0px;
+        padding-top: 0px;
+        text-align: justify;
+}
+#bar li {
+        margin-top: 0;
+	margin-bottom: 0;
+	background: #ccc;
+	border: 1px solid #999;
+	float: left;
+        width: 33%;
+        height: 24px;
+        text-align: center;
+	}
+div.results {
+    position: relative;
+    bottom: 160px;
+    left: 260px;
+}
+form.reg {
+    height: 200px;
+}
+span#toptext {
+    font-variant: small-caps;
+    font-weight: bold;
+    font-size: 25px;
+    color:white;
+    float:right;
+    margin-right:5px;
+    vertical-align:bottom;
+    text-align: right;
+    margin-top: 80px;
+}
+td {
+    
+}
+td.maintext {
+    color: #999;
+    font-size:14px;
+    padding-left:5px;
+    background: url(../main_block.png) no-repeat -10px -160px;
+    font-weight: bold;
+    font-family: 'Conv_MICRA' , Verdana, Tahoma;
+}

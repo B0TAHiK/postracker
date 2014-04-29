@@ -14,6 +14,10 @@
             'corporationName' => $row[corporationName],
             'allianceName' => $row[allianceName]
         );
+    echo $data[$i][allianceName];
+        if ($data[$i][allianceName] == ""):
+            $data[$i][allianceName] = "None";
+        endif;
     echo "<option value='", $data[$i][characterName], "'>", $data[$i][characterName], "</option>";
     $i++;
     endforeach;

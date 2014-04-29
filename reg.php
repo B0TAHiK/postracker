@@ -17,29 +17,35 @@
         require_once 'functions.php';
         require_once 'db_con.php';
         require_once 'sane.php';
+        include 'header.php';
         if (isset($_SESSION[id])) {
             echo "You already logged in!";
         } else {
             echo<<<_END
-            <form action="reg.php" method="post">
-            <fieldset>
-            <legend style="font-weight: bold">Login form</legend>
-            E-mail:
-            <input type="text" name="email"><br>
-            Password:
-            <input type = "password" name = "password">
-            <br>
-            keyID:
-            <input type="text" name="keyID" id="keyID"><br>
-            vCode:
-            <input type="text" name="vCode" id="vCode"><br>
+            <form action="reg.php" method="post" class="reg">
+            <td><legend style="font-weight: bold">Registration form</legend></td>
+             <table>
+                <tr>
+                    <td class="maintext">E-mail:</td>
+                    <td><input type="text" name="email"></td>
+                </tr>
+                <tr>
+                    <td class="maintext">Password:</td>
+                    <td><input type = "password" name = "password"></td>
+                </tr>
+                <tr>
+                    <td class="maintext">keyID:</td>
+                    <td><input type="text" name="keyID" id="keyID"></td>
+                </tr>
+                <tr>
+                    <td class="maintext">vCode:</td>
+                    <td><input type="text" name="vCode" id="vCode" size=64> <input type="button" class="getChars" onclick="SendRequest()" Value="Get Characters" /></td>
+                </tr>
+                <tr>
+                    <td><input type=submit></td>
+                </tr>
+            </table>
             <div class="results"></div>
-            <input type="button" class="getChars" onclick="SendRequest()" Value="Get Characters" />
-            <input type=submit>
-            </fieldset>
-            </form>
-            </table> 
-            </fieldset>
             </form>
 _END;
                
