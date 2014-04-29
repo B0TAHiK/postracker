@@ -28,7 +28,6 @@
         for ($k = 0; $k < count($keyIDarr); $k++) {
             unset($data);
             //Getting XML...
-            //$msg .= "<br/>Parsing StarbaseList.xml for key " . $k+1;
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
             $api = api_req($page, $keyID, $vCode, '', '');
@@ -44,12 +43,9 @@
                     'moonID' => strval($row[moonID]),
                     'state' => strval($row[state]),
                     'stateTimestamp' => strval($row[stateTimestamp])
-//                    'ownerID' => strval($row[standingOwnerID])
                 );
             $i++;
             endforeach;
-
-            //$i=0;
             //Getting names from CCP MySQL DB...
             for ($i = 0; $i < count($data); $i++) {
                 $moonID = $data[$i][moonID];
@@ -65,15 +61,9 @@
                 $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='$typeID' LIMIT 1";
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . "Error:" . mysql_error());
-                $data[$i]['typeName'] = mysql_result($result, 0);     
-                // Comment next 5 strings if you don't wish to have debug information on the screen.
-                /*foreach ($data[$i] as $row) {
-                echo $row, "<br>";    
-                };
-                echo "<br>";*/
+                $data[$i]['typeName'] = mysql_result($result, 0);
             }
             //Adding information to the DB...
-            //$i=0;
             for ($i = 0; $i < count($data); $i++) {
                 $moonID = $data[$i][moonID];
                 $typeID = $data[$i][typeID];
@@ -83,13 +73,11 @@
                 $stateTimestamp = $data[$i][stateTimestamp];
                 $moonName = $data[$i][moonName];
                 $typeName = $data[$i][typeName];
-//                $ownerID = $data[$i][ownerID];
                 //Checking for obsolete records...
                 $msg .= "<br/>POS id " . $posID . ". Checking for obsolete records... ";
                 $query = "SELECT `posID` FROM `poslist`";
                 $result = mysql_query($query);
-                if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
-                
+                if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());               
                 $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
                 $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
                 $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
@@ -98,7 +86,10 @@
                         if($data[$j]['posID']==$poslist[0]) break;
                         if($j==count($data)){
                             //Deleting obsolete records, if found...
-                            mysql_query("DELETE FROM `poslist` WHERE `posID`='{$poslist[0]}' AND `ownerID` = '$ownerID'");			
+                            mysql_query("DELETE FROM `poslist` WHERE `posID`='{$poslist[0]}' AND `ownerID` = '$ownerID'");	
+                            if(!mysql_error()){
+                                if(mysql_affected_rows()!=0) $msg .= " Deleting obsolete records... [ok]";
+                            } else endlog($msg . " Deleting obsolete records... " . mysql_error());		
                         }
                     }
                 }
