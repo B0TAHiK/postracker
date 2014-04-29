@@ -8,7 +8,6 @@
         <script type="text/javascript" src="js/scripts.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <!--<link rel="stylesheet" type="text/css" href="blocs/navigation.css">-->
         <title>Registration</title>
     </head>
     <body>
@@ -23,7 +22,7 @@
         } else {
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
-            <td><legend style="font-weight: bold">Registration form</legend></td>
+            <span id="head">Registration form</span>
              <table>
                 <tr>
                     <td class="maintext">E-mail:</td>
@@ -42,6 +41,7 @@
                     <td><input type="text" name="vCode" id="vCode" size=64> <input type="button" class="getChars" onclick="SendRequest()" Value="Get Characters" /></td>
                 </tr>
                 <tr>
+                    <input type=hidden name="go" value="sent">
                     <td><input type=submit></td>
                 </tr>
             </table>
@@ -50,10 +50,39 @@
 _END;
                
             };
-        $email = $_POST[email];
-        $password = $_POST[password];
-        $keyID = $_POST[keyID];
-        $vCode = $_POST[vCode];
+            if ($_POST[go] == 'sent'):
+                if ($_POST[email] == ""):
+                    echo "Please give your e-mail!";
+                    exit;
+                endif;
+                if ($_POST[password] == ""):
+                    echo "Please set up password!";
+                    exit;
+                endif;
+                if ($_POST[chars] == ""):
+                    echo "Please push 'Get Characters' button!";
+                    exit;
+                endif;
+                $email = sanitizeMySQL($_POST[email]);
+                $password = md5($_POST[password]);
+                $keyID = sanitizeMySQL($_POST[keyID]);
+                $vCode = sanitizeMySQL($_POST[vCode]);
+                $char = sanitizeMySQL($_POST[chars]);
+                mysql_connect($hostname, $username, $mysql_pass);
+                mysql_select_db($db_name);
+                $query = "SELECT `email` FROM `users` WHERE `email`='$email' LIMIT 1";
+                $result = mysql_query($query);
+                if (mysql_num_rows($result) == 1):
+                    echo "There is user with e-mail " . $email . "!";
+                    exit;
+                else:
+                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char'";
+                    $result = mysql_query($query) or die(mysql_error());
+                    if ($result) {
+                        echo 'Successfully registered!';
+                    }
+                endif;             
+            endif;
         ?>
         </div>
     </body>

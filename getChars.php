@@ -2,7 +2,7 @@
     require_once 'functions.php';
     $keyID = $_POST[keyID];
     $vCode = $_POST[vCode];
-    echo '<select name="menu" size="1">';
+    echo '<select name="chars" size="1">';
     $page = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
     $api = api_req($page, $keyID, $vCode, '', '');
     $i = 0;
