@@ -1,6 +1,9 @@
 <?php
     session_start();
     $thisPage="reg";
+    if ($_POST[go] == 'sent'):
+        ob_start();
+    endif;
 ?>
 <html>
     <head>
@@ -17,9 +20,10 @@
         require_once 'db_con.php';
         require_once 'sane.php';
         include 'header.php';
-        if (isset($_SESSION[id])) {
-            echo "You already logged in!";
+        if (isset($_SESSION[id]) OR isset($_COOKIE[id])){ 
+            echo "<div class='error'>You already logged in!</div>";
         } else {
+            echo $_SESSION[id];
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
             <span id="head">Registration form</span>
@@ -42,7 +46,7 @@
                 </tr>
                 <tr>
                     <input type=hidden name="go" value="sent">
-                    <td><input type=submit></td>
+                    <td><input id="submit" type=submit disabled=true /></td>
                 </tr>
             </table>
             <div class="results"></div>
@@ -52,15 +56,18 @@ _END;
             };
             if ($_POST[go] == 'sent'):
                 if ($_POST[email] == ""):
-                    echo "Please give your e-mail!";
+                    echo "<div class='error'>Please give your e-mail!</div>";
+                    ob_end_flush();
                     exit;
                 endif;
                 if ($_POST[password] == ""):
-                    echo "Please set up password!";
+                    echo "<div class='error'>Please set up password!</div>";
+                    ob_end_flush();
                     exit;
                 endif;
                 if ($_POST[chars] == ""):
-                    echo "Please push 'Get Characters' button!";
+                    echo "<div class='error'>Please push 'Get Characters' button!</div>";
+                    ob_end_flush();
                     exit;
                 endif;
                 $email = sanitizeMySQL($_POST[email]);
@@ -73,16 +80,23 @@ _END;
                 $query = "SELECT `email` FROM `users` WHERE `email`='$email' LIMIT 1";
                 $result = mysql_query($query);
                 if (mysql_num_rows($result) == 1):
-                    echo "There is user with e-mail " . $email . "!";
+                    echo "<div class='error'>There is user with e-mail <b>" . $email . "</b>!</div>";
+                    ob_end_flush();
                     exit;
                 else:
                     $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char'";
                     $result = mysql_query($query) or die(mysql_error());
                     if ($result) {
-                        echo 'Successfully registered!';
+                        echo '<div class="error">Successfully registered!</div>';
+                        $query = "SELECT `id` FROM `users` WHERE `email` = '$email'";
+                        $result = mysql_query($query);
+                        $_SESSION[id] = mysql_result($result, 0);
+                        setcookie(id, $id, time()+60*60*24*30);
+                        ob_end_flush();
                     }
                 endif;             
             endif;
+            include 'bottom.php'
         ?>
         </div>
     </body>

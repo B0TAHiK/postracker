@@ -1,3 +1,4 @@
+document.getElementById(".submit").disabled=true;
 function SendRequest(){
                 $.ajax({
                     type: "POST",
@@ -7,4 +8,5 @@ function SendRequest(){
                         $('.results').html(data);
                     }
                 });
+                document.getElementById("submit").disabled = false;
                 };
