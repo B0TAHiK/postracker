@@ -1,4 +1,3 @@
-document.getElementById(".submit").disabled=true;
 function SendRequest(){
                 $.ajax({
                     type: "POST",
