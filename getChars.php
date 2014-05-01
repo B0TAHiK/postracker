@@ -1,6 +1,5 @@
 <?php
     session_start();
-    print (session_id());
     require_once 'functions.php';
     $keyID = $_POST[keyID];
     $vCode = $_POST[vCode];

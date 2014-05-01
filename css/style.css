@@ -57,20 +57,6 @@ ul#bar {
     height: 24px;
     text-align: center;
 }
-#bar #currentpage:hover {
-background-image: -webkit-gradient(
-	linear,
-	left top,
-	left bottom,
-	color-stop(0, #FFFFFF),
-	color-stop(1, #AC0000)
-    );
-    background-image: -o-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
-    background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
-    background-image: -webkit-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
-    background-image: -ms-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
-    background-image: linear-gradient(to bottom, #FFFFFF 0%, #AC0000 100%);
-}
 #bar #currentpage a {
     font-variant: small-caps;
     color:white;
@@ -79,6 +65,9 @@ background-image: -webkit-gradient(
     font-size:20px;
     font-family: Arial Unicode MS;
     margin-bottom:4px;
+}
+#bar #currentpage:hover {
+    background-color: #C73232;
 }
 #bar li {
     border-top-left-radius: 15px;
@@ -113,9 +102,34 @@ span#toptext {
     margin-top: 80px;
     font-family: eve;
 }
+div#logout {
+    display: table;
+    position:relative;
+    width:400px;
+    height:70px;
+    float: right;
+    left: 260px;
+    font-size: 22px;
+    color:white;
+}
+#logout a{
+    font-size: 22px;
+    color:white;
+    float:right;
+}
+div#char {
+    display: table;
+    position: relative;
+    font-size: 20px;
+    color:white;
+    float:right;
+    bottom: 63px;
+    left: 270px;
+}
 /*Style for main body*/
 div#mainbody {
     margin-left:5px;
+    margin-right:5px;
 }
 div.results {
     position: relative;
@@ -133,6 +147,17 @@ td.maintext {
     /*font-weight: bold;*/
     font-family: Arial Unicode MS;
     text-align:right;
+}
+table#pos {
+    text-align:center;
+    width: 100%;
+}
+tr#colored {
+    background-color: #CCC8BE;
+}
+td#alert {
+    color:red;
+    font-weight: bold;
 }
 div#topic {
     display:table;
@@ -153,9 +178,10 @@ span#topic {
     vertical-align: bottom;
 }
 div.error {
+    text-align:center;
     font-size:16px;
     margin: 0 auto;
-    width: 200px;
+    width: 400px;
     font-weight: bold;
     padding-bottom: 5px;
 }

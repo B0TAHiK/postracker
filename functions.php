@@ -49,4 +49,14 @@
         }
         return $out;
     }
+    function hoursToDays($inputTime) {
+        $hoursInADay = 24;
+        $days = floor($inputTime / $hoursInADay);
+        $hoursLeft = $inputTime - $days * $hoursInADay;
+        $result = array (
+            'd' => $days,
+            'h' =>$hoursLeft
+        );
+        return $result;
+    }
 ?>

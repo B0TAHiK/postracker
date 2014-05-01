@@ -1,6 +1,4 @@
 <?php
-require_once'db_con.php';
-mysql_connect($hostname, $username, $mysql_pass);
 function sanitizeString($var)
 {
     $var = stripslashes($var);
@@ -9,9 +7,9 @@ function sanitizeString($var)
     return $var;
 }
 
-function sanitizeMySQL($var)
-{
-    require_once'db_con.php';
+function sanitizeMySQL($var){
+    require 'db_con.php';
+    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
     $var = mysql_real_escape_string($var);
     $var = sanitizeString($var);
     return $var;

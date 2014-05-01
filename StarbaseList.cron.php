@@ -81,6 +81,7 @@
                 $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
                 $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
                 $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
+                $ownerName = strval($apiChar->result->key->rowset->row->attributes()->corporationName);
                 while($poslist = mysql_fetch_array($result , MYSQL_NUM)){
                     for($j=0;$j<=count($data);$j++){
                         if($data[$j]['posID']==$poslist[0]) break;
@@ -108,7 +109,7 @@
                 } else {
                 //If not, creating new row...
                     $msg .= " Not found old record, creating new... ";
-                    $query = "INSERT INTO `poslist` SET `posID`= '$posID', `typeID` = '$typeID', `locationID` = '$locationID', `moonID` = '$moonID', `state` = '$state', `stateTimestamp` = '$stateTimestamp', `moonName` = '$moonName', `typeName` = '$typeName', `ownerID` = '$ownerID'";
+                    $query = "INSERT INTO `poslist` SET `posID`= '$posID', `typeID` = '$typeID', `locationID` = '$locationID', `moonID` = '$moonID', `state` = '$state', `stateTimestamp` = '$stateTimestamp', `moonName` = '$moonName', `typeName` = '$typeName', `ownerID` = '$ownerID', `ownerName`= '$ownerName'";
                     $result = mysql_query($query);
                     if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
                 };
