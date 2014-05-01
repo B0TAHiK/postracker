@@ -135,18 +135,22 @@ td.maintext {
     text-align:right;
 }
 div#topic {
+    display:table;
     background-color: #440808;
     margin-bottom:20px;
+    height:16px;
+    width: 101%;
 }
 span#topic {
+    display: table-cell;
     color:white;
     font-size:16px;
     font-weight: bold;
-    font-family: Arial Unicode MS;
     text-align:center;
     margin: 0 auto;
     font-family:eve;
     word-spacing:5px;
+    vertical-align: bottom;
 }
 div.error {
     font-size:16px;

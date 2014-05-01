@@ -12,10 +12,11 @@
     </head>
     <body>
         <div id="wrapper">
+            <?php include 'header.php'; ?>
+            <div id="topic"><span id="topic">registration form</span></div>
         <?php
         require_once 'db_con.php';
         require_once 'sane.php';
-        include 'header.php';
         If (isset($_SESSION[id]) OR isset($_COOKIE[id])){
             if ($_POST[go] != 'sent'):
                 ob_end_flush();
@@ -24,7 +25,6 @@
         } else {            
         echo<<<_END
         <form action="login.php" method="post" class="login">
-            <span id="head">Login form</span>
              <table>
                 <tr>
                     <td class="maintext">E-mail:</td>

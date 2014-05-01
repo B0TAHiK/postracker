@@ -15,18 +15,17 @@
     </head>
     <body>
         <div id="wrapper">
+            <?php include 'header.php'; ?>
+            <div id="topic"><span id="topic">registration form</span></div>
         <?php
         require_once 'functions.php';
         require_once 'db_con.php';
         require_once 'sane.php';
-        include 'header.php';
         if (isset($_SESSION[id]) OR isset($_COOKIE[id])){ 
             echo "<div class='error'>You already logged in!</div>";
         } else {
-            echo $_SESSION[id];
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
-            <div id="topic"><span id="topic">registration form</span></div>
             <div id="mainbody">
              <table>
                 <tr>
@@ -85,7 +84,11 @@ _END;
                     ob_end_flush();
                     exit;
                 else:
-                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char'";
+                    require_once 'functions.php';
+                    $characterID = $_SESSION[$char][characterID];
+                    $corporationID = $_SESSION[$char][corporationID];
+                    $allianceID = $_SESSION[$char][allianceID];
+                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID'";
                     $result = mysql_query($query) or die(mysql_error());
                     if ($result) {
                         echo '<div class="error">Successfully registered!</div>';
