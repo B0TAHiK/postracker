@@ -7,18 +7,18 @@ echo<<<_END
         <li
 _END;
     if ($thisPage=="index")echo " id=\"currentpage\"";
-      echo "><a href=\"/\">Main</a></li>"
+      echo "><a href=\"/\">main</a></li>"
    . "<li";
     if ($thisPage=="login")
         echo " id=\"currentpage\"";
-        echo "><a href=\"login.php\">Login</a></li>
+        echo "><a href=\"login.php\">login</a></li>
         <li";
         if ($thisPage=="reg")
             echo " id=\"currentpage\"";
-      echo "><a href=\"reg.php\">Register</a></li>
+      echo "><a href=\"reg.php\">register</a></li>
         <li";
       if ($thisPage=="admin") 
       echo " id=\"currentpage\"";
-      echo"><a href=\"admin.php\">Admin</a></li>";
+      echo"><a href=\"admin.php\">admin</a></li>";
       echo "</ul>";
 ?>

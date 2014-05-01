@@ -26,7 +26,8 @@
             echo $_SESSION[id];
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
-            <span id="head">Registration form</span>
+            <div id="topic"><span id="topic">registration form</span></div>
+            <div id="mainbody">
              <table>
                 <tr>
                     <td class="maintext">E-mail:</td>
@@ -46,11 +47,11 @@
                 </tr>
                 <tr>
                     <input type=hidden name="go" value="sent">
-                    <td><input id="submit" type=submit disabled=true /></td>
+                    <td><input id="submit" value="Register" type=submit disabled=true /></td>
                 </tr>
             </table>
             <div class="results"></div>
-            </form>
+            </form></div>
 _END;
                
             };

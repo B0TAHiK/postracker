@@ -1,6 +1,11 @@
 /*General settings*/
+@font-face {
+    font-family: 'eve'; /*a name to be used later*/
+    src: url(../fonts/eve.ttf); 
+}
 body {
     background-color: #440808;
+    font-family: Arial Unicode MS;
 }
 div#wrapper {
     width: 80%;
@@ -19,6 +24,7 @@ div#head {
 }
 .logo {
     margin-top: 10px;
+    height:60px;
 }
 div#bar {
     height: 20px;
@@ -26,34 +32,25 @@ div#bar {
     border-radius: 5px;
 }
 ul#bar {
+    /*background-color:white;*/
     list-style: none;
-    width: 99%;
+    width: 100%;
     height: 24px;
     padding-right: 0px;
     padding-left: 0px;
     padding-bottom: 0px;
     padding-top: 0px;
     text-align: justify;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0px;
+    margin-left:0px;
+    margin-bottom: 0px;
     position: relative;
     bottom:26px;
 }
 #bar #currentpage {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-image: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0, #C4362A),
-        color-stop(1, #664535)
-    );
-    background-image: -o-linear-gradient(bottom, #C4362A 0%, #664535 100%);
-    background-image: -moz-linear-gradient(bottom, #C4362A 0%, #664535 100%);
-    background-image: -webkit-linear-gradient(bottom, #C4362A 0%, #664535 100%);
-    background-image: -ms-linear-gradient(bottom, #C4362A 0%, #664535 100%);
-    background-image: linear-gradient(to bottom, #C4362A 0%, #664535 100%);
+    background-color: #ac0000;
     border: 1px solid #111;
     float: left;
     width: 10%;
@@ -61,42 +58,32 @@ ul#bar {
     text-align: center;
 }
 #bar #currentpage:hover {
-    background-image: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0, #C47972),
-        color-stop(1, #664535)
+background-image: -webkit-gradient(
+	linear,
+	left top,
+	left bottom,
+	color-stop(0, #FFFFFF),
+	color-stop(1, #AC0000)
     );
-    background-image: -o-linear-gradient(bottom, #C47972 0%, #664535 100%);
-    background-image: -moz-linear-gradient(bottom, #C47972 0%, #664535 100%);
-    background-image: -webkit-linear-gradient(bottom, #C47972 0%, #664535 100%);
-    background-image: -ms-linear-gradient(bottom, #C47972 0%, #664535 100%);
-    background-image: linear-gradient(to bottom, #C47972 0%, #664535 100%);
+    background-image: -o-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
+    background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
+    background-image: -webkit-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
+    background-image: -ms-linear-gradient(bottom, #FFFFFF 0%, #AC0000 100%);
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #AC0000 100%);
 }
 #bar #currentpage a {
+    font-variant: small-caps;
     color:white;
     text-decoration: none;
-    font-weight: bold;
+    /*font-weight: bold;*/
     font-size:20px;
-    font-family: 'Conv_MICRA' , Verdana, Tahoma;
+    font-family: Arial Unicode MS;
     margin-bottom:4px;
 }
 #bar li {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-image: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0, #8A2F23),
-        color-stop(1, #381E1E)
-    );
-    background-image: -o-linear-gradient(bottom, #8A2F23 0%, #381E1E 100%);
-    background-image: -moz-linear-gradient(bottom, #8A2F23 0%, #381E1E 100%);
-    background-image: -webkit-linear-gradient(bottom, #8A2F23 0%, #381E1E 100%);
-    background-image: -ms-linear-gradient(bottom, #8A2F23 0%, #381E1E 100%);
-    background-image: linear-gradient(to bottom, #8A2F23 0%, #381E1E 100%);
+    background-color:#383838;
     border: 1px solid #111;
     float: left;
     width: 10%;
@@ -104,31 +91,19 @@ ul#bar {
     text-align: center;
 }
 #bar li:hover {
-    background-image: -webkit-gradient(
-	linear,
-	left top,
-	left bottom,
-	color-stop(0, #F7BCB4),
-	color-stop(1, #381E1E)
-        );
-    background-image: -o-linear-gradient(bottom, #F7BCB4 0%, #381E1E 100%);
-    background-image: -moz-linear-gradient(bottom, #F7BCB4 0%, #381E1E 100%);
-    background-image: -webkit-linear-gradient(bottom, #F7BCB4 0%, #381E1E 100%);
-    background-image: -ms-linear-gradient(bottom, #F7BCB4 0%, #381E1E 100%);
-    background-image: linear-gradient(to bottom, #F7BCB4 0%, #381E1E 100%);
+    background-color: #ac0000;
 }
 #bar a {
-    color:#FAB7AF;
+    font-variant: small-caps;
+    color: #ffffff;
     text-decoration: none;
-    font-weight: bold;
+    /*font-weight: bold;*/
     font-size:20px;
-    font-family: 'Conv_MICRA' , Verdana, Tahoma;
+    font-family: Arial Unicode MS;
     position: relative;
     bottom:2px;
 }
 span#toptext {
-    font-variant: small-caps;
-    font-weight: bold;
     font-size: 25px;
     color:white;
     float:right;
@@ -136,8 +111,12 @@ span#toptext {
     vertical-align:bottom;
     text-align: right;
     margin-top: 80px;
+    font-family: eve;
 }
 /*Style for main body*/
+div#mainbody {
+    margin-left:5px;
+}
 div.results {
     position: relative;
     bottom: 160px;
@@ -151,15 +130,23 @@ td.maintext {
     font-size:14px;
     padding-left:5px;
     background: url(../main_block.png) no-repeat -10px -160px;
-    font-weight: bold;
-    font-family: 'Conv_MICRA' , Verdana, Tahoma;
+    /*font-weight: bold;*/
+    font-family: Arial Unicode MS;
+    text-align:right;
 }
-span#head {
-    color:#444;
-    font-size:20px;
+div#topic {
+    background-color: #440808;
+    margin-bottom:20px;
+}
+span#topic {
+    color:white;
+    font-size:16px;
     font-weight: bold;
-    font-family: 'Conv_MICRA' , Verdana, Tahoma;
+    font-family: Arial Unicode MS;
     text-align:center;
+    margin: 0 auto;
+    font-family:eve;
+    word-spacing:5px;
 }
 div.error {
     font-size:16px;
@@ -179,8 +166,7 @@ div.bottom {
 }
 span#bottom {
     margin-top: 20px;
-    font-variant: small-caps;
-    font-weight: bold;
+    /*font-weight: bold;*/
     font-size: 15px;
     color: white;
     float: right;
