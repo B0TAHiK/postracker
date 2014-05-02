@@ -18,7 +18,7 @@
     \curl_close($ch);
     // close curl resource to free up system resources  
     }
-    function calc_fuel_time($typeID, $fuel, $msg) {
+    function calc_fuel_time($typeID, $fuel, $systemID, $msg) {
         require 'db_con.php';
         mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
         mysql_select_db($db_name);
@@ -26,6 +26,9 @@
         mysql_select_db($db_name) or die(mysql_error());
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
         $result = mysql_query($query);
+        $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
+        $api = api_req($page, "", "", "", "");
+        $systemOwner = $api->xpath("/result/rowset/row[@solarSystemID = '$systemID']//allianceID");
         $time = $fuel / mysql_result($result, 0);
         return $time;
     }
