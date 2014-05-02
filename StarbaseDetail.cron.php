@@ -59,15 +59,18 @@
                         $msg .= "<br/>Strontium clathrates:";
                         //Getting CT type...
                         $msg .= " CT type... ";
-                        $query = "SELECT `typeid` FROM `poslist` WHERE `posID`='$posIDQuery' LIMIT 1";
+                        $query = "SELECT * FROM `poslist` WHERE `posID`='$posIDQuery' LIMIT 1";
                         $result = mysql_query($query);
-                        $type = mysql_result($result, 0);
+                        $table = mysql_fetch_assoc($result);
+                        $type = $table[typeID];
+                        $systemID = $table[locationID];
+                        echo $systemID;
                         if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
                         //Calculating Estimated time...
                         $msg .= " Calculating Estimated time.";
                         $data[$i]['stront'] = $data[$i][posFuelQuantity];
                         $stront = $data[$i][stront];
-                        $time = calc_stront_time($type, $stront, $msg);
+                        $time = calc_stront_time($type, $stront, $systemID, $msg);
                         //Adding information to the DB...
                         $msg .= " Adding information to the DB... ";
                         $query = "UPDATE `poslist` SET `stront` = '$stront', `rfTime` = '$time' WHERE `posID`='$posIDQuery'";
