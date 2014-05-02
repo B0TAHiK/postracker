@@ -1,6 +1,21 @@
 <?php
     session_start();
     $thisPage="reg";
+    require_once 'sane.php';
+    require_once 'db_con.php';
+    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
+    mysql_select_db($db_name) or die(mysql_error());
+    $SID = session_id();
+    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
+    $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
+    $result = mysql_query($query) or die(mysql_error());
+    if (mysql_num_rows($result) != 1) {
+        setcookie(SID, $cookieSID, time()-60*60*24*30);
+        $loggedIN = 0;
+    } else {
+        $loggedIN = 1;
+    }
+    mysql_close();
     if ($_POST[go] == 'sent'):
         ob_start();
     endif;
@@ -15,18 +30,17 @@
     </head>
     <body>
         <div id="wrapper">
+            <?php include 'header.php'; ?>
+            <div id="topic"><span id="topic">registration form</span></div>
         <?php
         require_once 'functions.php';
         require_once 'db_con.php';
         require_once 'sane.php';
-        include 'header.php';
-        if (isset($_SESSION[id]) OR isset($_COOKIE[id])){ 
+        if ($loggedIN === 1){ 
             echo "<div class='error'>You already logged in!</div>";
         } else {
-            echo $_SESSION[id];
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
-            <div id="topic"><span id="topic">registration form</span></div>
             <div id="mainbody">
              <table>
                 <tr>
@@ -85,14 +99,22 @@ _END;
                     ob_end_flush();
                     exit;
                 else:
-                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char'";
+                    require_once 'functions.php';
+                    $characterID = $_SESSION[$char][characterID];
+                    $corporationID = $_SESSION[$char][corporationID];
+                    $allianceID = $_SESSION[$char][allianceID];
+                    $lastSID = session_id();
+                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
                     $result = mysql_query($query) or die(mysql_error());
                     if ($result) {
-                        echo '<div class="error">Successfully registered!</div>';
-                        $query = "SELECT `id` FROM `users` WHERE `email` = '$email'";
-                        $result = mysql_query($query);
-                        $_SESSION[id] = mysql_result($result, 0);
-                        setcookie(id, $id, time()+60*60*24*30);
+                        echo<<<_END
+                        <div class="error">Successfully registered!<br>You will be redirected shortly.</div>
+                        <script type="text/javascript">
+                            var delay = 500;
+                            setTimeout("document.location.href='/'", delay);
+                        </script>
+_END;
+                        setcookie(SID, $lastSID, time()+60*60*24*30);
                         ob_end_flush();
                     }
                 endif;             
