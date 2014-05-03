@@ -18,32 +18,38 @@
     \curl_close($ch);
     // close curl resource to free up system resources  
     }
-    function calc_fuel_time($typeID, $fuel, $systemID, $msg) {
+    function calc_fuel_time($typeID, $fuel, $systemID, $allyownerID, $msg) {
         require 'db_con.php';
-        mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-        mysql_select_db($db_name);
-        if(mysql_error()) endlog($msg . mysql_error());
-        mysql_select_db($db_name) or die(mysql_error());
+        mysql_connect($hostname, $username, $mysql_pass);
+        if(!mysql_error()) {
+            mysql_select_db($db_name);
+            if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
+        } else endlog($msg . mysql_error());
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
         $result = mysql_query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
         $api = api_req($page, "", "", "", "");
-        $systemOwner = $api->xpath("/result/rowset/row[@solarSystemID = '$systemID']//allianceID");
-        $time = $fuel / mysql_result($result, 0);
-        return $time;
+        $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
+        $time = $fuel / (($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 0) : mysql_result($result, 0)*0.75);
+        return floor($time);
     }
-    function calc_stront_time($typeID, $stront, $msg) {
+    function calc_stront_time($typeID, $stront, $allyownerID, $msg) {
         require 'db_con.php';
-        mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-        mysql_select_db($db_name);
-        if(mysql_error()) endlog($msg . mysql_error());
+        mysql_connect($hostname, $username, $mysql_pass);
+        if(!mysql_error()) {
+            mysql_select_db($db_name);
+            if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
+        } else endlog($msg . mysql_error());
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
         $result = mysql_query($query);
-        $rfTime = $stront / mysql_result($result, 1);
-        return $rfTime;
+        $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
+        $api = api_req($page, "", "", "", "");
+        $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
+        $rfTime = $stront / (($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 1) : mysql_result($result, 1)*0.75);
+        return floor($rfTime);
     }
     function endlog($m) {
-        echo $m . "<br/>[" . str_repeat("=",100) . "]<br/>";
+        echo $m . "\n[" . str_repeat("=",100) . "]\n";
         exit;
     }
     function xml2array ($xmlObject, $out = array ()){

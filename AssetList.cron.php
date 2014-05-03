@@ -1,11 +1,9 @@
 <?php
         //Requiring some libs...
         require_once 'functions.php';
-        $msg = date(DATE_RFC822) . "<br/>[" . str_repeat("=",100) . "]";
-        //Requiring some libs...
         require 'db_con.php';
         //Connecting to DB...
-        $msg .= "<br/>Connecting to DB... ";
+        $msg = "Connecting to DB... ";
         mysql_connect($hostname, $username, $mysql_pass);
         if(!mysql_error()) {
             mysql_select_db($db_name);
@@ -14,7 +12,7 @@
         $query = "SELECT * FROM `apilist`";
         $result = mysql_query($query);
         //Getting APIs from DB...
-        $msg .= "<br/>Collecting API keys... ";
+        $msg .= "\nCollecting API keys... ";
         $keyIDarr = array();
         $vCodearr = array();
         while($row = mysql_fetch_assoc($result)){
@@ -35,7 +33,7 @@
             $api = api_req($page, $keyID, $vCode, '', '');
             $i=0;
             //Parsing XML...
-            $msg .= "<br/>Parsing silo ids for key " . $keyID;
+            $msg .= "\nParsing silo ids for key " . $keyID;
             foreach ( $api->result->rowset->row as $row):
                 if(strval($row[typeID]) == 14343 && strval($row[flag]) == 0){ //silo
                     $msg .= ", " . strval($row[itemID]);
@@ -49,9 +47,10 @@
                     $i++;
                 }
             endforeach;
+            $msg .=  "\nCurrent Time: " . strval($api->currentTime) . " Cached Until: " . strval($api->cachedUntil);
             for ($i = 0; $i < count($data); $i++) {
                 //Checking for obsolete records...
-                $msg .= "<br/>Silo id " . $data[$i]['siloID'] . ". Checking for obsolete records... ";
+                $msg .= "\nSilo id " . $data[$i]['siloID'] . ". Checking for obsolete records... ";
                 $query = "SELECT `siloID` FROM `silolist`";
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());               
@@ -71,7 +70,7 @@
                     }
                 }
                 // Looking for old records...
-                $msg .= "<br/>Looking for old records... ";
+                $msg .= "\nLooking for old records... ";
                 $query = "SELECT `siloID` FROM `silolist` WHERE `siloID`='{$data[$i]['siloID']}' LIMIT 1";
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());

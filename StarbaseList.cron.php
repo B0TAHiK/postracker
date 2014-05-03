@@ -1,18 +1,16 @@
 <?php
         //Requiring some libs...
         require_once 'functions.php';
-        $msg = date(DATE_RFC822) . "<br/>[" . str_repeat("=",100) . "]";
-        //Requiring some libs...
         require 'db_con.php';
         //Connecting to DB...
-        $msg .= "<br/>Connecting to DB... ";
+        $msg = "Connecting to DB... ";
         mysql_connect($hostname, $username, $mysql_pass);
         if(!mysql_error()) {
             mysql_select_db($db_name);
             if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
         } else endlog($msg . mysql_error());
         //StarbaseList parsing...
-        $msg .= "<br/>Collecting API keys... ";
+        $msg .= "\nCollecting API keys... ";
         $page = "https://api.eveonline.com/corp/StarbaseList.xml.aspx";
         $query = "SELECT * FROM `apilist`";
         $result = mysql_query($query);
@@ -33,7 +31,7 @@
             $api = api_req($page, $keyID, $vCode, '', '');
             $i=0;
             //Parsing XML...
-            $msg .= "<br/>Parsing POS ids for key " . $keyID;
+            $msg .= "\nParsing POS ids for key " . $keyID;
             foreach ( $api->result->rowset->row as $row):
                 $msg .= ", " . strval($row[itemID]);
                 $data[$i] = array(
@@ -44,14 +42,15 @@
                     'state' => strval($row[state]),
                     'stateTimestamp' => strval($row[stateTimestamp])
                 );
-            $i++;
+                $i++;
             endforeach;
+            $msg .=  "\nCurrent Time: " . strval($api->currentTime) . " Cached Until: " . strval($api->cachedUntil);
             //Getting names from CCP MySQL DB...
             for ($i = 0; $i < count($data); $i++) {
                 $moonID = $data[$i][moonID];
                 $typeID = $data[$i][typeID];
                 //Getting moon coordinates...
-                $msg .= "<br/>Moon id: " . $moonID . ". Getting coordinates... ";
+                $msg .= "\nMoon id: " . $moonID . ". Getting coordinates... ";
                 $query = "SELECT `itemName` FROM  `mapDenormalize` WHERE `itemID`='$moonID' LIMIT 1";
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . "Error:" . mysql_error()); 
@@ -74,7 +73,7 @@
                 $moonName = $data[$i][moonName];
                 $typeName = $data[$i][typeName];
                 //Checking for obsolete records...
-                $msg .= "<br/>POS id " . $posID . ". Checking for obsolete records... ";
+                $msg .= "\nPOS id " . $posID . ". Checking for obsolete records... ";
                 $query = "SELECT `posID` FROM `poslist`";
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());               
