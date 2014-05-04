@@ -28,7 +28,7 @@
             //Getting XML...
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
-            $api = api_req($page, $keyID, $vCode, '', '');
+            $api = api_req($page, $keyID, $vCode, '', '', '', '');
             $i=0;
             //Parsing XML...
             $msg .= "\nParsing POS ids for key " . $keyID;
@@ -78,7 +78,7 @@
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());               
                 $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
-                $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+                $apiChar = api_req($pageChar, $keyID, $vCode, '', '', '', '');
                 $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
                 $ownerName = strval($apiChar->result->key->rowset->row->attributes()->corporationName);
                 while($poslist = mysql_fetch_array($result , MYSQL_NUM)){

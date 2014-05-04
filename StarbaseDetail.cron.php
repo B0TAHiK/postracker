@@ -26,7 +26,7 @@
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
             $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
-            $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+            $apiChar = api_req($pageChar, $keyID, $vCode, '', '', '', '');
             $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
             $allyownerID = (strval($apiChar->result->key->rowset->row->attributes()->allianceID) != "0") ? strval($apiChar->result->key->rowset->row->attributes()->allianceID) : "1";
             $page = "https://api.eveonline.com/corp/Starbasedetail.xml.aspx";
@@ -44,7 +44,7 @@
             foreach ($posID as $posIDQuery):
                 //Getting API information...
                 $msg .= "\nGetting POS id " . $posIDQuery . " info...";
-                $apiPosDetails = api_req($page, $keyID, $vCode, $idkind, $posIDQuery);
+                $apiPosDetails = api_req($page, $keyID, $vCode, $idkind, $posIDQuery, '', '');
                 $msg .= " Current Time: " . strval($apiPosDetails->currentTime) . " Cached Until: " . strval($apiPosDetails->cachedUntil);
                 $i=0;
                 //Parsing XML...

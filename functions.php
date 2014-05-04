@@ -1,7 +1,7 @@
 <?php
-    function api_req($page, $keyID, $vCode, $kindid, $id) {
+    function api_req($page, $keyID, $vCode, $kindid, $id, $kindid2, $id2) {
     // create curl resource
-    $ch = curl_init($page . "?keyID=" . $keyID . "&vCode=" . $vCode . "&" . $kindid . "=" . $id);
+    $ch = curl_init($page . "?keyID=" . $keyID . "&vCode=" . $vCode . "&" . $kindid . "=" . $id . "&" . $kindid2 . "=" . $id2);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -28,7 +28,7 @@
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
         $result = mysql_query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
-        $api = api_req($page, "", "", "", "");
+        $api = api_req($page, "", "", "", "", "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
         $time = $fuel / (($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 0) : mysql_result($result, 0)*0.75);
         return floor($time);
@@ -43,7 +43,7 @@
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
         $result = mysql_query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
-        $api = api_req($page, "", "", "", "");
+        $api = api_req($page, "", "", "", "", "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
         $rfTime = $stront / (($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 1) : mysql_result($result, 1)*0.75);
         return floor($rfTime);

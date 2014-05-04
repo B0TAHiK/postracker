@@ -27,10 +27,10 @@
             $keyID = $keyIDarr[$k];
             $vCode = $vCodearr[$k];
             $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
-            $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+            $apiChar = api_req($pageChar, $keyID, $vCode, '', '', '', '');
             $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
             $page = "https://api.eveonline.com/corp/AssetList.xml.aspx";
-            $api = api_req($page, $keyID, $vCode, '', '');
+            $api = api_req($page, $keyID, $vCode, '', '', '', '');
             $i=0;
             //Parsing XML...
             $msg .= "\nParsing silo ids for key " . $keyID;
@@ -55,7 +55,7 @@
                 $result = mysql_query($query);
                 if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());               
                 $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
-                $apiChar = api_req($pageChar, $keyID, $vCode, '', '');
+                $apiChar = api_req($pageChar, $keyID, $vCode, '', '', '', '');
                 $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
                 while($silolist = mysql_fetch_array($result , MYSQL_NUM)){
                     for($j=0;$j<=count($data);$j++){
