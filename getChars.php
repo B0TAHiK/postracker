@@ -5,8 +5,6 @@
     echo "<link rel='stylesheet' type='text/css' href='css/style.css'>";
     $keyID = $_POST[keyID];
     $vCode = $_POST[vCode];
-    $keyID = "565702";
-    $vCode = "9MONZoBdlsvcv20hPZV21Bsx3Lo29XEz9TxHUnGgeR8vkGMmjsaSiSf35DsDxhfK";
     mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
     mysql_select_db($db_name) or die(mysql_error());
     echo '<select name="chars" size="1">';
