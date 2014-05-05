@@ -68,4 +68,11 @@
         );
         return $result;
     }
+    function sendmail($email, $subj, $text){
+        $subject  = '=?UTF-8?B?' . base64_encode($subj) . '?=';
+        $headers  = "MIME-Version: 1.0\r\n"; 
+        $headers .= "Content-type: text/plain; charset=utf-8\r\n";
+        $headers .= "From: buaco <buaco@buaco.ru>\r\n";
+        return mail($email, $subject, $text, $headers);
+    }
 ?>
