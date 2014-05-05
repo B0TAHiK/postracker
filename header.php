@@ -8,7 +8,7 @@ if ($loggedIN == 0) {
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/\">main</a></li>"
+          echo "><a href=\"/postracker\">main</a></li>"
        . "<li";
         if ($thisPage=="login")
             echo " id=\"currentpage\"";
@@ -32,17 +32,17 @@ _END;
      echo<<<_END
         <div id='head'><img class='logo' src=lg2.png>
         <span id='toptext'>POS tracker</span>
-            <div id='logout'><a href="logout.php">Log Out</a></div>
+            <div id='logout'><a href="logout.php">Log Out</a>
                 <div id='char'>
                 <img src=https://image.eveonline.com/Character/$charInfo[characterID]_64.jpg>
                 Welcome, <b>$charInfo[char]</b>!
-            </div>
+            </div></div>
         </div>
         <ul id='bar'>
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/\">main</a></li>"
+          echo "><a href=\"/postracker\">main</a></li>"
        . "<li";
           if ($thisPage=="admin") 
           echo " id=\"currentpage\"";

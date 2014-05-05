@@ -123,8 +123,9 @@ div#char {
     font-size: 20px;
     color:white;
     float:right;
-    bottom: 63px;
-    left: 270px;
+    margin-top:5px;
+//    bottom: 63px;
+    left: 85px;
 }
 /*Style for main body*/
 div#mainbody {
