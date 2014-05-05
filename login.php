@@ -23,13 +23,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/navigation.css">
         <title>Log in</title>
     </head>
     <body>
         <div id="wrapper">
             <?php include 'header.php'; ?>
             <div id="topic"><span id="topic">login form</span></div>
-            <div id="mainbody">
         <?php
         require_once 'db_con.php';
         require_once 'sane.php';
@@ -78,7 +78,7 @@ _END;
                         <div class='error'>You logged in.<br>You will be redirected shortly.</div>
                         <script type="text/javascript">
                             var delay = 5000;
-                            setTimeout("document.location.href='/'", delay);
+                            setTimeout("document.location.href='/postracker'", delay);
                         </script>
 _END;
                     } else {
@@ -91,6 +91,5 @@ _END;
         ?>
             </div>
             <?php include "bottom.php"; ?>
-        </div>
     </body>
 </html>

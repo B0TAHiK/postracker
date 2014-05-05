@@ -19,5 +19,5 @@ mysql_close();
 ?>
 <script type="text/javascript">
 var delay = 500;
-  setTimeout("document.location.href='/'", delay);
+  setTimeout("document.location.href='/postracker'", delay);
 </script>

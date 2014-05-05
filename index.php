@@ -22,13 +22,13 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/navigation.css">
         <title>Main Page</title>
     </head>
     <body>
         <div id="wrapper">
             <?php include 'header.php'; ?>
             <div id="topic"><span id="topic">main page</span></div>
-            <div id="mainbody">
             <?php
                 If ($loggedIN === 1){
                     require_once 'db_con.php';
@@ -54,12 +54,12 @@
                         echo "<table id='pos'>";
                         echo<<<_END
                         <tr>
-                            <td><b>System:</b></td>
-                            <td><b>Type:</b></td>
-                            <td><b>Moon:</b></td>
-                            <td><b>State:</b></td>
-                            <td><b>Fuel left<br>(Days and hours):</b></td>
-                            <td><b>Stront time left:</b></td>
+                            <td width = 10%><b>System:</b></td>
+                            <td width = 30%><b>Type:</b></td>
+                            <td width = 20%><b>Moon:</b></td>
+                            <td width = 10%><b>State:</b></td>
+                            <td width = 15%><b>Fuel left<br>(Days and hours):</b></td>
+                            <td width = 15%><b>Stront time left:</b></td>
                         </tr>
 _END;
                         $i=0;
@@ -123,8 +123,7 @@ _END;
                     echo "<div class='error'>Access denied. Autorization required.</div>";
                 };
             ?>
-            </div>
-        <?php include "bottom.php"; ?>
         </div>
+        <?php include "bottom.php"; ?>
     </body>
 </html>

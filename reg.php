@@ -26,6 +26,7 @@
         <script type="text/javascript" src="js/scripts.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/navigation.css">
         <title>Registration</title>
     </head>
     <body>
@@ -41,15 +42,14 @@
         } else {
             echo<<<_END
             <form action="reg.php" method="post" class="reg">
-            <div id="mainbody">
              <table>
                 <tr>
                     <td class="maintext">E-mail:</td>
-                    <td><input type="text" name="email"></td>
+                    <td><input type="text" name="email" placeholder="yourname@email.com" title="Your e-mail is required." id="email" /><span id="email-valid"></span></td>
                 </tr>
                 <tr>
                     <td class="maintext">Password:</td>
-                    <td><input type = "password" name = "password"></td>
+                    <td><input type = "password" name = "password" placeholder="Min. 6 symbols" id="password" /><span id="password-valid"></span></td>
                 </tr>
                 <tr>
                     <td class="maintext">keyID:</td>
@@ -60,12 +60,15 @@
                     <td><input type="text" name="vCode" id="vCode" size=64> <input type="button" class="getChars" onclick="SendRequest()" Value="Get Characters" /></td>
                 </tr>
                 <tr>
+                    <td></td>
+                    <td><div class="results"></div></td>
+                </tr>
+                <tr>
                     <input type=hidden name="go" value="sent">
                     <td><input id="submit" value="Register" type=submit disabled=true /></td>
                 </tr>
             </table>
-            <div class="results"></div>
-            </form></div>
+            </form>
 _END;
                
             };
@@ -99,28 +102,32 @@ _END;
                     ob_end_flush();
                     exit;
                 else:
-                    require_once 'functions.php';
-                    $characterID = $_SESSION[$char][characterID];
-                    $corporationID = $_SESSION[$char][corporationID];
-                    $allianceID = $_SESSION[$char][allianceID];
-                    $lastSID = session_id();
-                    $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
-                    $result = mysql_query($query) or die(mysql_error());
-                    if ($result) {
-                        echo<<<_END
-                        <div class="error">Successfully registered!<br>You will be redirected shortly.</div>
-                        <script type="text/javascript">
-                            var delay = 500;
-                            setTimeout("document.location.href='/'", delay);
-                        </script>
+                    if ($_SESSION[$char][allowed] === 1) {
+                        require_once 'functions.php';
+                        $characterID = $_SESSION[$char][characterID];
+                        $corporationID = $_SESSION[$char][corporationID];
+                        $allianceID = $_SESSION[$char][allianceID];
+                        $lastSID = session_id();
+                        $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
+                        $result = mysql_query($query) or die(mysql_error());
+                        if ($result) {
+                            echo<<<_END
+                            <div class="error">Successfully registered!<br>You will be redirected shortly.</div>
+                            <script type="text/javascript">
+                                var delay = 500;
+                                setTimeout("document.location.href='/postracker'", delay);
+                            </script>
 _END;
-                        setcookie(SID, $lastSID, time()+60*60*24*30);
-                        ob_end_flush();
+                            setcookie(SID, $lastSID, time()+60*60*24*30);
+                            ob_end_flush();
+                        }
+                    } else {
+                        echo "<div class='error'>You're not eligible. Sorry!</div>";
                     }
                 endif;             
             endif;
-            include 'bottom.php'
         ?>
         </div>
+        <?php include 'bottom.php' ?>
     </body>
 </html>
