@@ -116,6 +116,8 @@ div#logout {
     font-size: 22px;
     color:white;
     float:right;
+    position: relative;
+    z-index: 1;
 }
 div#char {
     display: table;
