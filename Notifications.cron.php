@@ -21,7 +21,8 @@
         	'characterID' => $row[characterID],
         	'corporationID' => $row[corporationID],
         	'allianceID' => $row[allianceID],
-        	'lastNotifID' => $row[lastNotifID]
+        	'lastNotifID' => $row[lastNotifID],
+        	'email' => $row[email]
     	);
     }
     if(count($users) > 0) $msg .= " found " . count($users) . " API keys"; else endlog($msg . " found none");
@@ -38,7 +39,7 @@
         	$rtype = FALSE;
         	$notificationID = strval($row[notificationID]);
         	$msg .= "\nFound Notifications id " . $notificationID . "... ";
-        	$typearr = array(37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 75, 76, 77, 78, 79, 80, 86, 87, 88, 93, 94, 95); // http://wiki.eve-id.net/APIv2_Char_Notifications_XML
+        	$typearr = array(37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 75, 76, 77, 78, 79, 80, 86, 87, 88, 93); // http://wiki.eve-id.net/APIv2_Char_Notifications_XML
         	for($j = 0; $j < count($typearr); $j++){
         		if(strval($row[typeID])==$typearr[$j]){
         			$rtype = TRUE;
@@ -82,22 +83,28 @@
         $num = mysql_num_rows($result);
         if($num === 0){
         	$msg .= " Inserting new notification... ";
+            $notixtxttosql = ParsingNotifText($data[$k]['NotificationText']);
         	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
-        	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '{$data[$k]['NotificationText']}', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
+        	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
         	$result = mysql_query($query);
         	if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
         } else $msg .= " Notification already exists.";
     }
     /*$msg .= "\nSending e-mails with new notifications";
     for ($k = 0; $k < count($users); $k++){
+        $msg .= "\nUser: " . $users[characterID];
+    	$lastnotif = 0;
+    	$mailtext = date(DATE_RFC822) . " New notifications arrived.\n";
     	for($j = 0; $j < count($data); $j++){
     		if($data[$j]['notificationID'] > $users[$k][lastNotifID]){
-    			$msg .= "hsss";
-    			//$query = "UPDATE `users` SET `lastNotifID` = '{$xxx}' WHERE `keyID`='{$users[$k]['keyID']}'";
-                $result = mysql_query($query);
+                $msg .= " New notofication id: " . $data[$j]['notificationID'];
+    			//$mailtext .= "\n" . GenerateMailText($data[$k]['typeID'], $data[$k]['sentDate'], $data[$k]['NotificationText']);
+    			if($lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
     		}
     	}
+    	//$query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
+        //$result = mysql_query($query);
+        //sendmail($users[$k][email], "New EvE Online notification update", $mailtext);
     }*/
-    //sendmail($email, "New EvE Online notification update", $text);
     endlog($msg);
 ?>
