@@ -42,11 +42,13 @@ _END;
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/postracker\">main</a></li>"
-       . "<li";
-          if ($thisPage=="admin") 
-          echo " id=\"currentpage\"";
-          echo"><a href=\"admin.php\">admin</a></li>";
+          echo "><a href=\"/postracker\">main</a></li>";
+          if ($_SESSION[groupID] == 3) {
+            echo "<li";
+            if ($thisPage=="admin")
+            echo " id=\"currentpage\"";
+            echo"><a href=\"admin.php\">admin</a></li>";
+          }
           echo "</ul>";
 }
 ?>

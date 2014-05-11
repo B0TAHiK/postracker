@@ -1,4 +1,5 @@
 <?php
+        set_time_limit(300);
         //Requiring some libs...
         require_once 'functions.php';
         require 'db_con.php';

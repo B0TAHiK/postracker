@@ -1,21 +1,6 @@
 <?php
-    session_start();
     $thisPage="reg";
-    require_once 'sane.php';
-    require_once 'db_con.php';
-    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-    mysql_select_db($db_name) or die(mysql_error());
-    $SID = session_id();
-    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
-    $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
-    $result = mysql_query($query) or die(mysql_error());
-    if (mysql_num_rows($result) != 1) {
-        setcookie(SID, $cookieSID, time()-60*60*24*30);
-        $loggedIN = 0;
-    } else {
-        $loggedIN = 1;
-    }
-    mysql_close();
+    require_once 'autorize.php';
     if ($_POST[go] == 'sent'):
         ob_start();
     endif;
@@ -33,6 +18,7 @@
         <div id="wrapper">
             <?php include 'header.php'; ?>
             <div id="topic"><span id="topic">registration form</span></div>
+            <div id="mainbody">
         <?php
         require_once 'functions.php';
         require_once 'db_con.php';
@@ -107,8 +93,9 @@ _END;
                         $characterID = $_SESSION[$char][characterID];
                         $corporationID = $_SESSION[$char][corporationID];
                         $allianceID = $_SESSION[$char][allianceID];
+                        $groupID = 1;
                         $lastSID = session_id();
-                        $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
+                        $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `groupID` = '$groupID', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
                         $result = mysql_query($query) or die(mysql_error());
                         if ($result) {
                             echo<<<_END
@@ -127,6 +114,7 @@ _END;
                 endif;             
             endif;
         ?>
+                </div>
         </div>
         <?php include 'bottom.php' ?>
     </body>

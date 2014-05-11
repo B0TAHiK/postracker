@@ -1,26 +1,11 @@
 <?php
-    session_start();
     $thisPage="index";
-    require_once 'sane.php';
-    require_once 'db_con.php';
-    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-    mysql_select_db($db_name) or die(mysql_error());
-    $SID = session_id();
-    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
-    $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
-    $result = mysql_query($query) or die(mysql_error());
-    if (mysql_num_rows($result) != 1) {
-        setcookie(SID, $cookieSID, time()-60*60*24*30);
-        $loggedIN = 0;
-    } else {
-        $loggedIN = 1;
-    }
-    mysql_close();
+    require_once 'autorize.php';
 ?>
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/navigation.css">
         <title>Main Page</title>
@@ -29,49 +14,116 @@
         <div id="wrapper">
             <?php include 'header.php'; ?>
             <div id="topic"><span id="topic">main page</span></div>
+            <div id="mainbody">
             <?php
                 If ($loggedIN === 1){
+                    //Requiring some libs...
                     require_once 'db_con.php';
                     require_once 'functions.php';
                     mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
                     mysql_select_db($db_name) or die(mysql_error());
-                    $query = "SELECT `ownerID` FROM `poslist`";
+                    //Getting corps...
+                    switch ($_SESSION[groupID]) {
+                        case 1:
+                        $query = "SELECT `ownerID` FROM `poslist` WHERE `ownerID` = '$_SESSION[corporationID]'";
+                            break;
+                        case 2:
+                        case 3:
+                        $query = "SELECT `ownerID` FROM `poslist`";
+                            break;
+                    }
                     $result = mysql_query($query);
                     $owners = array();
                     while ($ownerlist = mysql_fetch_row($result)) {
                     $owners[] = $ownerlist[0]; 
-                    };
+                    }
                     $onwersCut = array_unique($owners);
+                    //Making list of corps
                     foreach ($onwersCut as $owner):
+                        //Getting information for each corp...
                         $query = "SELECT * FROM `poslist` WHERE `ownerID` = $owner";
                         $result = mysql_query($query) or die(mysql_error());
                         $data = array();
                         while ($poslist = mysql_fetch_assoc($result)) {
                             $data[] = $poslist;
-                        };
+                        }
                         $ownerName = $data[0][ownerName];
                         echo "Owner: <b>$ownerName</b>";
                         echo "<table id='pos'>";
                         echo<<<_END
-                        <tr>
-                            <td width = 10%><b>System:</b></td>
-                            <td width = 30%><b>Type:</b></td>
-                            <td width = 20%><b>Moon:</b></td>
-                            <td width = 10%><b>State:</b></td>
-                            <td width = 15%><b>Fuel left<br>(Days and hours):</b></td>
-                            <td width = 15%><b>Stront time left:</b></td>
+                        <tr id="title">
+                            <td width = 10%>System:</td>
+                            <td width = 20%>Type:</td>
+                            <td width = 15%>Moon:</td>
+                            <td width = 10%>State:</td>
+                            <td width = 15%>Fuel left<br>(Days and hours):</td>
+                            <td width = 15%>Stront time left<br>(reinforce timer):</td>
+                            <td width = 15%>Silo information</td>
                         </tr>
 _END;
                         $i=0;
+                        //Parsing each POS...
                         foreach ($data as $table):
                             $time = hoursToDays($table[time]);
                             $rftime = hoursToDays($table[rfTime]);
                             $locationName = explode(" ", $table[moonName]);
+                            $typeTemp = explode(" ", $table[typeName]);
+                            $posType = $typeTemp[0];
+                            $posID = $table[posID];
+                            
+                            switch ($posType) {
+                                case "Minmatar":
+                                case "Angel":
+                                case "Domination":
+                                    $siloMax = "20000";
+                                    break;
+                                case "Caldari":
+                                case "Guristas":
+                                case "Dread":
+                                    $siloMax = "20000";
+                                    break;
+                                case "Amarr":
+                                case "True":
+                                case "Dark":
+                                case "Sansha":
+                                case "Blood":
+                                    $siloMax = "30000";
+                                    break;
+                                case "Gallente":
+                                case "Shadow":
+                                case "Serpentis":
+                                    $siloMax = "40000";
+                                    break;
+                                default:
+                                    $siloMax = "0";
+                                    break;
+                            }
+                            
+                            $query = "SELECT * FROM `silolist` WHERE `posID` = '$posID'";
+                            $result = mysql_query($query);
+                            $numSilo = mysql_num_rows($result);
+                            if ($numSilo > 0) {
+                                $silo = array();
+                                while ($silolist = mysql_fetch_assoc($result)) {
+                                    $silo[] = $silolist;
+                                }
+                                $j=0;
+                                foreach ($silo as $siloContents) {
+                                    $siloInfo[$j][quantity] = $siloContents[quantity];
+                                    $siloInfo[$j][mmVol] = $siloContents[quantity]*$siloContents[mmvolume];
+                                    $siloInfo[$j][mmname] = "$siloContents[mmname]";
+                                    $SiloFraction = Round(($siloInfo[$j][mmVol] / $siloMax), 2);
+                                    $siloInfo[$j][percent] = $SiloFraction;
+                                    $siloInfo[$j][maximum] = $siloMax / $siloContents[mmvolume];
+                                    $j++;
+                                }
+                            }
+                            
                             if (!($i % 2)){
                                 $isColored = "id=colored";
                             } else {
                                 $isColored = "";
-                            };
+                            }
                             if ($table[time] < 48 || $table[state] == 3) {
                                 $alert = "id='alert'";
                             } else {
@@ -110,19 +162,42 @@ _END;
                                     <td>$table[moonName]</td>
                                     <td $inRF>$state</td>
                                     <td $alert>$time[d]d $time[h]h</td>
-                                    <td>$rftime[d]d $rftime[h]h</td>
-                                </tr>
-                        
 _END;
-                        
+                            if ($table[state] == 3) {
+                                echo "<td $inRF>$table[stateTimestamp]</td>";
+                            } else {
+                                echo "<td>$rftime[d]d $rftime[h]h</td>";
+                            }
+                            echo "<td>";
+                            if ($numSilo > 0) {
+                                echo "<table align=center>";
+                                foreach ($siloInfo as $silos) {
+                                    if ($siloInfo[$j][percent] > 0.8) {
+                                            $alert = "id='alert'";
+                                        } else {
+                                            $alert = "";
+                                        }
+                                    echo "<tr>";
+                                    echo "<td>$silos[mmname]:</td>";
+                                    echo "<td $alert>$silos[quantity]/$silos[maximum]</td>";
+                                    echo "</tr>";
+                                }
+                                echo "</table>";
+                            } else {
+                                echo "No silo";
+                            }
+                             echo "</td>";
+                            echo"</tr>";
                             $i++;
+                            unset($siloInfo);
                             endforeach;
-                    echo "</table>";   
+                        echo "</table><br>";
                     endforeach;
                 } else {
                     echo "<div class='error'>Access denied. Autorization required.</div>";
-                };
+                }
             ?>
+                </div>
         </div>
         <?php include "bottom.php"; ?>
     </body>

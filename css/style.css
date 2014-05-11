@@ -91,9 +91,14 @@ td.maintext {
     font-family: Arial Unicode MS;
     text-align:right;
 }
+tr#title {
+    color:white;
+    background-color: #383838;
+}
 table#pos {
     text-align:center;
     width: 100%;
+    border: 1px solid #440808;
 }
 tr#colored {
     background-color: #CCC8BE;
