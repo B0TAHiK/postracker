@@ -38,7 +38,7 @@ span#toptext {
     margin-top: 80px;
     font-family: eve;
 }
-div#logout {
+/*div#logout {
     display: table;
     position:relative;
     width:400px;
@@ -47,7 +47,7 @@ div#logout {
     left: 260px;
     font-size: 22px;
     color:white;
-}
+}*/
 #logout a{
     font-size: 22px;
     color:white;
@@ -58,11 +58,16 @@ div#logout {
 div#char {
     display: table;
     position: relative;
-    font-size: 20px;
-    color:white;
     float:right;
     margin-top:5px;
-    left: 80px;
+    left: 270px;
+}
+span#char {
+    display:inline-block;
+    vertical-align: top;
+    color:white;
+    margin-left: 5px;
+    text-align: right;
 }
 /*Style for main body*/
 div#mainbody {

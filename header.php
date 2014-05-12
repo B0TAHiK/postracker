@@ -29,14 +29,21 @@ _END;
     $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
     $result = mysql_query($query) or die(mysql_error());
     $charInfo = mysql_fetch_assoc($result);
+    $groupID = $charInfo[groupID];
+    $query = "SELECT * FROM `groups` WHERE `id` = '$groupID' LIMIT 1";
+    $result = mysql_query($query);
+    $groupName = mysql_result($result, 0, $field = 1);
      echo<<<_END
         <div id='head'><img class='logo' src=lg2.png>
         <span id='toptext'>POS tracker</span>
-            <div id='logout'><a href="logout.php">Log Out</a>
-                <div id='char'>
+            <div id='char'>
                 <img src=https://image.eveonline.com/Character/$charInfo[characterID]_64.jpg>
-                Welcome, <b>$charInfo[char]</b>!
-            </div></div>
+                <span id='char'>
+                    Welcome,<br>
+                    $charInfo[char]!<br>
+                    [$groupName]
+                </span>
+            </div>
         </div>
         <ul id='bar'>
             <li
@@ -47,8 +54,10 @@ _END;
             echo "<li";
             if ($thisPage=="admin")
             echo " id=\"currentpage\"";
-            echo"><a href=\"admin.php\">admin</a></li>";
+            echo"><a href=\"admin.php\">admin</a></li><li";
           }
+          echo "><a href=\"https://redalliance.pw\">forum</a></li><li";
+          echo "><a href=\"logout.php\">logout</a></li>";
           echo "</ul>";
 }
 ?>
