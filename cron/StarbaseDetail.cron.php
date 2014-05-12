@@ -1,8 +1,8 @@
 <?php
         set_time_limit(300);
         //Requiring some libs...
-        require_once 'functions.php';
-        require 'db_con.php';
+        require_once '../functions.php';
+        require '../db_con.php';
         //Connecting to DB...
         $msg = "Connecting to DB... ";
         mysql_connect($hostname, $username, $mysql_pass);
@@ -55,7 +55,7 @@
                         'posFuelQuantity' => strval($row[quantity])
                     );
                     //Distinguishing fuel blocs from Strontium Clathrates...
-                        if ($data[$i][posFuelID] == 16275) {
+                    if ($data[$i][posFuelID] == 16275) {
                         $msg .= "\nStrontium clathrates:";
                         //Getting CT type...
                         $msg .= " CT type... ";
@@ -87,10 +87,11 @@
                         $msg .= " Calculating Estimated time.";
                         $data[$i]['fuel'] = $data[$i][posFuelQuantity];
                         $fuel = $data[$i][fuel];
-                        $time = calc_fuel_time($type, $fuel, $systemID, $allyownerID, $msg);
+                        $fuelph = calc_fuel_time($type, $systemID, $allyownerID, $msg);
+                        $time = floor($fuel / $fuelph);
                         //Adding information to the DB...
                         $msg .= " Adding information to the DB... ";
-                        $query = "UPDATE `poslist` SET `fuel` = '$fuel', `time` = '$time' WHERE `posID`='$posIDQuery'";
+                        $query = "UPDATE `poslist` SET `fuel` = '$fuel', `fuelph` = '$fuelph', `time` = '$time' WHERE `posID`='$posIDQuery'";
                         $result = mysql_query($query);
                         if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
                     }

@@ -1,7 +1,7 @@
 <?php
     //Requiring some libs...
-    require_once 'functions.php';
-    require 'db_con.php';
+    require_once '../functions.php';
+    require '../db_con.php';
     //Connecting to DB...
     $msg = "Connecting to DB... ";
     mysql_connect($hostname, $username, $mysql_pass);
@@ -14,6 +14,7 @@
     //Getting APIs from DB...
     $msg .= "\nCollecting API keys... ";
     $users = array();
+    $deld = array();
     while($row = mysql_fetch_assoc($result)){
     	$users[] = array(
     		'keyID' => $row[keyID],
@@ -22,6 +23,7 @@
         	'corporationID' => $row[corporationID],
         	'allianceID' => $row[allianceID],
         	'lastNotifID' => $row[lastNotifID],
+            'mailNotif' => $row[mailNotif],
         	'email' => $row[email]
     	);
     }
@@ -83,28 +85,44 @@
         $num = mysql_num_rows($result);
         if($num === 0){
         	$msg .= " Inserting new notification... ";
-            $notixtxttosql = ParsingNotifText($data[$k]['NotificationText']);
+            $notixtxttosql = addslashes(ParsingNotifText($data[$k]['NotificationText']));
         	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
         	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
         	$result = mysql_query($query);
         	if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
         } else $msg .= " Notification already exists.";
     }
-    /*$msg .= "\nSending e-mails with new notifications";
+    $msg .= "\nSending e-mails with new notifications";
     for ($k = 0; $k < count($users); $k++){
-        $msg .= "\nUser: " . $users[characterID];
-    	$lastnotif = 0;
-    	$mailtext = date(DATE_RFC822) . " New notifications arrived.\n";
-    	for($j = 0; $j < count($data); $j++){
-    		if($data[$j]['notificationID'] > $users[$k][lastNotifID]){
-                $msg .= " New notofication id: " . $data[$j]['notificationID'];
-    			//$mailtext .= "\n" . GenerateMailText($data[$k]['typeID'], $data[$k]['sentDate'], $data[$k]['NotificationText']);
-    			if($lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
-    		}
-    	}
-    	//$query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
-        //$result = mysql_query($query);
-        //sendmail($users[$k][email], "New EvE Online notification update", $mailtext);
-    }*/
+        $msg .= "\nUser e-mail: " . $users[$k][email];
+        if($users[$k][mailNotif]==1){
+            $query = "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}'";
+            $result = mysql_query($query);
+            for ($j = 0; $j < mysql_num_rows($result); $j++){
+                if(mysql_result($result, $j, 1)==76){
+                    $tmparr = yaml_parse(mysql_result($result, $j, 3));
+                    for($h=0; $h < count($tmparr[wants]); $h++){
+                        if($tmparr[wants][$h][typeID] = 4246 || $tmparr[wants][$h][typeID] = 4247 || $tmparr[wants][$h][typeID] = 4051 || $tmparr[wants][$h][typeID] = 4312){ // Fuel Block ids
+                            $query2 = "SELECT `fuelph` FROM `poslist` WHERE `typeID` = '{$tmparr[typeID]}' LIMIT 1";
+                            $result2 = mysql_query($query2);
+                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*23 && $tmparr[wants][$h][quantity] <= mysql_result($result2, 0)*24)
+                                $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
+                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*3 && $tmparr[wants][$h][quantity] <= mysql_result($result2, 0)*4)
+                                $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
+                        }
+                    }
+                } else $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
+            }
+            if($mailtext != NULL){
+                $msg .= (sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [ok]" : " [fail]";
+                $lastnotif = 0;
+                for($j = 0; $j < count($data); $j++) if($data[$j]['notificationID'] > $users[$k]['lastNotifID'] && $lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
+                if($lastnotif > 0){
+                    $query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
+                    $result = mysql_query($query);
+                }
+            } else $msg .= " no new e-mails";
+        } else  $msg .= " doesn't wish receive e-mails";
+    }
     endlog($msg);
 ?>
