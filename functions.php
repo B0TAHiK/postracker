@@ -18,7 +18,7 @@
     \curl_close($ch);
     // close curl resource to free up system resources  
     }
-    function calc_fuel_time($typeID, $fuel, $systemID, $allyownerID, $msg) {
+    function calc_fuel_time($typeID, $systemID, $allyownerID, $msg) {
         require 'db_con.php';
         mysql_connect($hostname, $username, $mysql_pass);
         if(!mysql_error()) {
@@ -30,8 +30,8 @@
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
         $api = api_req($page, "", "", "", "", "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
-        $time = $fuel / (($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 0) : mysql_result($result, 0)*0.75);
-        return floor($time);
+        $time = ($allyownerID != $systemownerID[0][0]) ? mysql_result($result, 0) : mysql_result($result, 0)*0.75;
+        return $time;
     }
     function calc_stront_time($typeID, $stront, $allyownerID, $msg) {
         require 'db_con.php';
