@@ -1,7 +1,8 @@
 <?php
     //Requiring some libs...
-    require_once '../functions.php';
-    require '../db_con.php';
+    define("PATH", "/var/www/pos/");
+    require_once PATH . 'db_con.php';
+    require_once PATH . 'functions.php';
     //Connecting to DB...
     $msg = "Connecting to DB... ";
     mysql_connect($hostname, $username, $mysql_pass);
@@ -105,9 +106,9 @@
                         if($tmparr[wants][$h][typeID] = 4246 || $tmparr[wants][$h][typeID] = 4247 || $tmparr[wants][$h][typeID] = 4051 || $tmparr[wants][$h][typeID] = 4312){ // Fuel Block ids
                             $query2 = "SELECT `fuelph` FROM `poslist` WHERE `typeID` = '{$tmparr[typeID]}' LIMIT 1";
                             $result2 = mysql_query($query2);
-                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*23 && $tmparr[wants][$h][quantity] <= mysql_result($result2, 0)*24)
+                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*23 && $tmparr[wants][$h][quantity] < mysql_result($result2, 0)*24)
                                 $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
-                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*3 && $tmparr[wants][$h][quantity] <= mysql_result($result2, 0)*4)
+                            if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*3 && $tmparr[wants][$h][quantity] < mysql_result($result2, 0)*4)
                                 $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
                         }
                     }

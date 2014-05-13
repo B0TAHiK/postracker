@@ -105,8 +105,14 @@ _END;
                                 setTimeout("document.location.href='/postracker'", delay);
                             </script>
 _END;
+                            $subj = "Welcome to Red Alliance POS Monitor, $char";
+                            $text = "Your e-mail: $email.\n"
+                                    . "In case you forget your password contact greg2010 or atap via ingame mail.\n\n"                                    . "Respectfully,\n"
+                                    . "Red Alliance management.";
+                            
                             setcookie(SID, $lastSID, time()+60*60*24*30);
                             ob_end_flush();
+                            sendmail($email, $subj, $text);
                         }
                     } else {
                         echo "<div class='error'>You're not eligible. Sorry!</div>";

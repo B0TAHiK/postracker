@@ -1,6 +1,7 @@
 <?php
-require_once '../db_con.php';
-require_once '../functions.php';
+define("PATH", "/var/www/pos/");
+require_once PATH . 'db_con.php';
+require_once PATH . 'functions.php';
 mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
 mysql_select_db($db_name) or die(mysql_error());
 $query = "SELECT * FROM `users`";

@@ -1,7 +1,8 @@
 <?php
         //Requiring some libs...
-        require_once '../functions.php';
-        require '../db_con.php';
+        define("PATH", "/var/www/pos/");
+        require_once PATH . 'db_con.php';
+        require_once PATH . 'functions.php';
         //Connecting to DB...
         $msg = "Connecting to DB... ";
         mysql_connect($hostname, $username, $mysql_pass);
