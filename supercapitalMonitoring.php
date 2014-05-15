@@ -1,5 +1,5 @@
 <?php
-    $thisPage="index";
+    $thisPage="supers";
     require_once 'autorize.php';
 ?>
 <html>
@@ -13,7 +13,7 @@
     <body>
         <div id="wrapper">
             <?php include 'header.php'; ?>
-            <div id="topic"><span id="topic">main page</span></div>
+            <div id="topic"><span id="topic">supercapital monitoring</span></div>
             <div id="mainbody">
                 <?php
                     If ($loggedIN = 1 && $_SESSION[groupID] > 1){

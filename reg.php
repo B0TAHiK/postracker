@@ -39,7 +39,7 @@
                 </tr>
                 <tr>
                     <td class="maintext">keyID:</td>
-                    <td><input type="text" name="keyID" id="keyID"></td>
+                    <td><input type="text" name="keyID" id="keyID"> Required options: <b>Notifications</b>, <b>NotificationTexts</b>. Access mask: <b>49152</b>. You can obtain predefined key <a href ="https://support.eveonline.com/api/Key/CreatePredefined/49152">here</a>.</td>
                 </tr>
                 <tr>
                     <td class="maintext">vCode:</td>

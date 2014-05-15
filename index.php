@@ -8,12 +8,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/navigation.css">
-        <title>Main Page</title>
+        <title>Pos Monitor</title>
     </head>
     <body>
         <div id="wrapper">
             <?php include 'header.php'; ?>
-            <div id="topic"><span id="topic">main page</span></div>
+            <div id="topic"><span id="topic">pos monitor</span></div>
             <div id="mainbody">
             <?php
                 If ($loggedIN === 1){

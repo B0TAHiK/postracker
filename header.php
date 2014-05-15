@@ -8,7 +8,7 @@ if ($loggedIN == 0) {
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/postracker\">main</a></li>"
+          echo "><a href=\"/postracker\">pos monitor</a></li>"
        . "<li";
         if ($thisPage=="login")
             echo " id=\"currentpage\"";
@@ -16,11 +16,7 @@ _END;
             <li";
             if ($thisPage=="reg")
                 echo " id=\"currentpage\"";
-          echo "><a href=\"reg.php\">register</a></li>
-            <li";
-          if ($thisPage=="admin") 
-          echo " id=\"currentpage\"";
-          echo"><a href=\"admin.php\">admin</a></li>";
+          echo "><a href=\"reg.php\">register</a></li>";
           echo "</ul>";
 } else {
     mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
@@ -49,14 +45,20 @@ _END;
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/postracker\">main</a></li>";
-          if ($_SESSION[groupID] == 3) {
+          echo "><a href=\"/postracker\">pos monitor</a></li>";
+          if ($_SESSION[groupID] > 2) {
             echo "<li";
             if ($thisPage=="admin")
             echo " id=\"currentpage\"";
-            echo"><a href=\"admin.php\">admin</a></li><li";
+            echo"><a href=\"admin.php\">admin</a></li>";
           }
-          echo "><a href=\"https://redalliance.pw\">forum</a></li><li";
+          if ($_SESSION[groupID] > 1) {
+            echo "<li";
+            if ($thisPage=="supers")
+            echo " id=\"currentpage\"";
+            echo"><a href=\"supercapitalMonitoring.php\">supercapitals</a></li>";
+          }
+          echo "<li><a href=\"https://redalliance.pw\">forum</a></li><li";
           echo "><a href=\"logout.php\">logout</a></li>";
           echo "</ul>";
 }

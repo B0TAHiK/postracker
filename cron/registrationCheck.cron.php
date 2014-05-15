@@ -30,9 +30,16 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $result = mysql_query($query);
     if (mysql_num_rows($result) == 1) {
         //Дописать разбанивалку
-//        $groupID = 1;
-        $query = "UPDATE `users` SET `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
-        $result = mysql_query($query);
+        $neededMask = 49152;
+        $maskAPI = get_mask($keyID, $vCode);
+        if (($mask & $maskNeeded) <= 0) {
+            $groupID = 0;
+            $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
+            $result = mysql_query($query);
+        } else {
+            $query = "UPDATE `users` SET `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
+            $result = mysql_query($query);
+        }
     } else {
         $groupID = 0;
         $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";

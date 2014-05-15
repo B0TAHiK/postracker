@@ -7,6 +7,12 @@
     $vCode = $_POST[vCode];
     mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
     mysql_select_db($db_name) or die(mysql_error());
+    $mask = get_mask($keyID, $vCode);
+    $maskNeeded = 49152;
+    if (($mask & $maskNeeded) <= 0) {
+        //No Access
+        die("<div class='error'>Wrong Mask!</div>");
+    }
     echo '<select name="chars" size="1">';
     $page = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
     $api = api_req($page, $keyID, $vCode, '', '');
