@@ -18,7 +18,7 @@ div#wrapper {
 }
 /*Styles for header.php*/
 div#head {
-    background: url(../header.png) repeat-x;
+    background: url(../img/header.png) repeat-x;
     height: 110px;
     margin:0px;
     border-top-left-radius: 4px;
@@ -92,7 +92,6 @@ td.maintext {
     color: black;
     font-size:14px;
     padding-left:5px;
-//    background: url(../main_block.png) no-repeat -10px -160px;
     font-family: Arial Unicode MS;
     text-align:right;
 }
@@ -144,7 +143,7 @@ div.bottom {
     width: 80%;
     position: relative;
     bottom:25px;
-    background: url(../toolbar.png) repeat-x;
+    background: url(../img/toolbar.png) repeat-x;
     height: 46px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;

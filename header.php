@@ -1,7 +1,7 @@
 <?php
 if ($loggedIN == 0) {
     echo<<<_END
-        <div id='head'><img class='logo' src=lg2.png>
+        <div id='head'><img class='logo' src=img/lg2.png>
         <span id='toptext'>POS tracker</span>
         </div>
         <ul id='bar'>
@@ -30,7 +30,7 @@ _END;
     $result = mysql_query($query);
     $groupName = mysql_result($result, 0, $field = 1);
      echo<<<_END
-        <div id='head'><img class='logo' src=lg2.png>
+        <div id='head'><img class='logo' src=img/lg2.png>
         <span id='toptext'>POS tracker</span>
             <div id='char'>
                 <img src=https://image.eveonline.com/Character/$charInfo[characterID]_64.jpg>
