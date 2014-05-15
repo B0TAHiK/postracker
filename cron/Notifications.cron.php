@@ -19,7 +19,7 @@ $msg .= "\nCollecting API keys... ";
 $users = array();
 $deld = array();
 while($row = mysql_fetch_assoc($result)){
-    if((get_mask($row[keyID], $row[vCode]) & 49152) > 0){ // Notifications & NotificationTexts
+    if((get_mask($row[keyID], $row[vCode]) & 49152) > 1){ // Notifications & NotificationTexts
         $users[] = array(
 		    'keyID' => $row[keyID],
     	    'vCode' => $row[vCode],
