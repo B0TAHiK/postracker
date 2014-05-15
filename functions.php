@@ -20,6 +20,13 @@ function api_req($page, $keyID, $vCode, $kindid, $id, $kindid2, $id2) {
     // close curl resource to free up system resources  
 }
 
+function get_mask($keyID, $vCode) {
+    $page = "https://api.eveonline.com/account/apiKeyInfo.xml.aspx";
+    $api = api_req($page, $keyID, $vCode, '', '', '', '');
+    $maskAPI = $api->result->key->attributes()->accessMask;
+    return $maskAPI;
+}
+
 function calc_fuel_time($typeID, $systemID, $allyownerID, $msg) {
     require 'db_con.php';
     mysql_connect($hostname, $username, $mysql_pass);
