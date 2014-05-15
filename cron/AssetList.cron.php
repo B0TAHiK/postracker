@@ -1,4 +1,5 @@
 <?php
+
 //Requiring some libs...
 //define("PATH", "/var/www/pos/");
 define("PATH", "/var/www/postracker/");
@@ -129,7 +130,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
             $result = mysql_query($query);
             if(!mysql_error()) $msg .= " Successful created"; else endlog($msg . mysql_error());
         };
-    }    
+    }
 }
 $msg .= "\nDeleting silos without POS";
 $query = "SELECT `posID` FROM `silolist`";
@@ -147,4 +148,5 @@ for ($i = 0; $i < mysql_num_rows($result); $i++){
     }
 }
 endlog($msg);
+
 ?>
