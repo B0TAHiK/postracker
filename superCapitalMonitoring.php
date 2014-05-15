@@ -29,15 +29,23 @@
                         while ($ownerlist = mysql_fetch_row($result)) {
                             $owners[] = $ownerlist[0]; 
                         }
-                        $onwersCut = array_unique($owners);
                         foreach ($onwersCut as $owner):
-                            $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner'";
+                            if (!isset($_POST[old])) {
+                                $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 6 MONTH)";
+                            } else {
+                                $MoreQuery = "";
+                            }
+                            $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner' $MoreQuery";
                             $result = mysql_query($query) or die(mysql_error());
                             $data = array();
+                            $i = 0;
                             while ($superCapList = mysql_fetch_assoc($result)) {
                                 $data[] = $superCapList;
+                                $i++;
                             }
-                            $corporationName = $data[0][corporationName];
+                            if ($i < 1) {
+                                continue;
+                            }
                             echo "Owner: <b>$corporationName</b>";
                             echo "<table id='pos'>";
                             echo<<<_END
