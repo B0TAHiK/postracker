@@ -6,6 +6,8 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/scripts.js"></script>
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/navigation.css">
         <title>Supercapital Monitoring</title>
@@ -30,12 +32,27 @@
                             $owners[] = $ownerlist[0]; 
                         }
                         $onwersCut = array_unique($owners);
+                        if (!isset($_POST[old])) {
+                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=hidden name='old' value='old'><input type=submit value='Show old faggots' /></form>";
+                        } else {
+                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=submit value='Hide old faggots' /></form>";
+                        }
                         foreach ($onwersCut as $owner):
-                            $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner'";
+                            if (!isset($_POST[old])) {
+                                $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 6 MONTH)";
+                            } else {
+                                $MoreQuery = "";
+                            }
+                            $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner' $MoreQuery";
                             $result = mysql_query($query) or die(mysql_error());
                             $data = array();
+                            $i = 0;
                             while ($superCapList = mysql_fetch_assoc($result)) {
                                 $data[] = $superCapList;
+                                $i++;
+                            }
+                            if ($i < 1) {
+                                continue;
                             }
                             $corporationName = $data[0][corporationName];
                             echo "Owner: <b>$corporationName</b>";
