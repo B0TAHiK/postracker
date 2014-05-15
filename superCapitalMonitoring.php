@@ -30,9 +30,9 @@
                             $owners[] = $ownerlist[0]; 
                         }
                         if (!isset($_POST[old])) {
-                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=hidden name='old' value='old'><input type=submit value='Show old faggots' /></form>";
+                            echo "<form action='superCapitalMonitoring.php' method='post' align='right'><input type=hidden name='old' value='old'><input type=submit value='Show old faggots' /></form>";
                         } else {
-                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=submit value='Hide old faggots' /></form>";
+                            echo "<form action='superCapitalMonitoring.php' method='post' align='right'><input type=submit value='Hide old faggots' /></form>";
                         }
                         $onwersCut = array_unique($owners);
                         foreach ($onwersCut as $owner):
@@ -52,6 +52,7 @@
                             if ($i < 1) {
                                 continue;
                             }
+                            $corporationName = $data[0][corporationName];
                             echo "Owner: <b>$corporationName</b>";
                             echo "<table id='pos'>";
                             echo<<<_END

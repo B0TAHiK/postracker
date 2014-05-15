@@ -34,7 +34,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
         //Дописать разбанивалку
         $neededMask = 49152;
         $maskAPI = get_mask($keyID, $vCode);
-        if (($mask & $maskNeeded) <= 0) {
+        if (($maskAPI & $neededMask) <= 0) {
             $groupID = 0;
             $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = mysql_query($query);
