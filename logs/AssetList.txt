@@ -1,0 +1,121 @@
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-03 18:55:43 Cached Until: 2014-05-04 18:55:43
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-03 18:55:43 Cached Until: 2014-05-03 23:25:05
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-04 00:55:42 Cached Until: 2014-05-05 00:55:42
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-04 00:55:42 Cached Until: 2014-05-04 06:55:42
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-04 06:55:42 Cached Until: 2014-05-05 06:55:42
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-04 06:55:42 Cached Until: 2014-05-04 12:55:42
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-04 12:55:41 Cached Until: 2014-05-05 12:55:41
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-04 12:55:42 Cached Until: 2014-05-04 18:55:42
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-04 18:55:40 Cached Until: 2014-05-05 18:55:40
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-04 18:55:41 Cached Until: 2014-05-04 18:55:42
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-05 00:55:40 Cached Until: 2014-05-06 00:55:40
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-05 00:55:40 Cached Until: 2014-05-05 06:55:40
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-05 06:55:40 Cached Until: 2014-05-06 06:55:40
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-05 06:55:40 Cached Until: 2014-05-05 12:55:40
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral hanged, updating...  Getting Moon Mineral type... [ok] Getting Moon Mineral volume... [ok] Successful created[ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-05 12:55:39 Cached Until: 2014-05-06 12:55:39
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-05 12:55:40 Cached Until: 2014-05-05 12:55:40
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-05 18:55:39 Cached Until: 2014-05-06 18:55:39
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-05 18:55:39 Cached Until: 2014-05-06 00:55:39
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-06 00:55:38 Cached Until: 2014-05-07 00:55:38
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-06 00:55:38 Cached Until: 2014-05-06 00:55:39
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]
+Connecting to DB... [ok]
+Collecting API keys...  found 2 API keys
+Parsing silo ids for key 3302903
+Current Time: 2014-05-06 06:55:38 Cached Until: 2014-05-07 06:55:38
+Parsing silo ids for key 3312920, 1013304843296, 1014480208010
+Current Time: 2014-05-06 06:55:39 Cached Until: 2014-05-06 12:55:39
+Silo id 1013304843296. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+Silo id 1014480208010. Checking for obsolete records... [ok]
+Looking for old records... [ok] Looking for moon mineral changed... [ok] Moon mineral didn't change, updating... [ok]
+[====================================================================================================]

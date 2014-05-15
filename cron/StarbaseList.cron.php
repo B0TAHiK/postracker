@@ -22,8 +22,10 @@ $result = mysql_query($query);
 $keyIDarr = array();
 $vCodearr = array();
 while($row = mysql_fetch_assoc($result)){
-    $keyIDarr[] = $row[keyID];
-    $vCodearr[] = $row[vCode];
+    if((get_mask($row[keyID], $row[vCode]) & 524288) > 0){ // StarbaseList
+        $keyIDarr[] = $row[keyID];
+        $vCodearr[] = $row[vCode];
+    }
 }
 if( count( $keyIDarr ) > 0 ) $msg .= " found " . count( $keyIDarr ) . " API keys"; else endlog($msg . " found none");
 //Running script for each API...

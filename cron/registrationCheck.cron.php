@@ -1,5 +1,7 @@
 <?php
-define("PATH", "/var/www/pos/");
+
+//define("PATH", "/var/www/pos/");
+define("PATH", "/var/www/postracker/");
 require_once PATH . 'db_con.php';
 require_once PATH . 'functions.php';
 mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
@@ -10,9 +12,9 @@ $keyIDarr = array();
 $vCodearr = array();
 $chararr = array();
 while($row = mysql_fetch_assoc($result)){
-        $keyIDarr[] = $row[keyID];
-        $vCodearr[] = $row[vCode];
-        $chararr[] = $row[char];
+    $keyIDarr[] = $row[keyID];
+    $vCodearr[] = $row[vCode];
+    $chararr[] = $row[char];
 }
 for ($k = 0; $k < count($keyIDarr); $k++) {
     $keyID = $keyIDarr[$k];
@@ -46,3 +48,5 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
         $result = mysql_query($query);
     }
 }
+
+?>

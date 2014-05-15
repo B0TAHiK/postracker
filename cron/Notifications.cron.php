@@ -19,16 +19,18 @@ $msg .= "\nCollecting API keys... ";
 $users = array();
 $deld = array();
 while($row = mysql_fetch_assoc($result)){
-	$users[] = array(
-		'keyID' => $row[keyID],
-    	'vCode' => $row[vCode],
-    	'characterID' => $row[characterID],
-    	'corporationID' => $row[corporationID],
-    	'allianceID' => $row[allianceID],
-    	'lastNotifID' => $row[lastNotifID],
-        'mailNotif' => $row[mailNotif],
-    	'email' => $row[email]
-	);
+    if((get_mask($row[keyID], $row[vCode]) & 49152) > 0){ // Notifications & NotificationTexts
+        $users[] = array(
+		    'keyID' => $row[keyID],
+    	    'vCode' => $row[vCode],
+    	    'characterID' => $row[characterID],
+    	    'corporationID' => $row[corporationID],
+    	    'allianceID' => $row[allianceID],
+    	    'lastNotifID' => $row[lastNotifID],
+            'mailNotif' => $row[mailNotif],
+    	    'email' => $row[email]
+        );
+    }
 }
 if(count($users) > 0) $msg .= " found " . count($users) . " API keys"; else endlog($msg . " found none");
 $i=0;
