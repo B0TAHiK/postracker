@@ -29,6 +29,12 @@
                         while ($ownerlist = mysql_fetch_row($result)) {
                             $owners[] = $ownerlist[0]; 
                         }
+                        if (!isset($_POST[old])) {
+                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=hidden name='old' value='old'><input type=submit value='Show old faggots' /></form>";
+                        } else {
+                            echo "<form action='supercapitalMonitoring.php' method='post' align='right'><input type=submit value='Hide old faggots' /></form>";
+                        }
+                        $onwersCut = array_unique($owners);
                         foreach ($onwersCut as $owner):
                             if (!isset($_POST[old])) {
                                 $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 6 MONTH)";
