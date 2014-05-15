@@ -42,11 +42,12 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $corporationID = strval($apiSheet[corporationID]);
     $corporationName = strval($apiSheet[corporationName]);
     //Removing obsolete chars from the DB...
-    $query = "SELECT `corporationID` FROM `superCapitalList`";
+    $query = "SELECT * FROM `superCapitalList` WHERE `corporationID` = '$corporationID'";
     $result = mysql_query($query);
-    while ($corporationIDAPI = mysql_fetch_row($result)) {
-        if ($corporationIDAPI[0] != $corporationID) {
-            $query = "DELETE FROM `superCapitalList` WHERE `corporationID` = '$corporationIDAPI[0]'";
+    while ($corpSupers = mysql_fetch_assoc($result)) {
+        $ifInCorp = $api->xpath("/eveapi/result/rowset/row[@characterID=$corpSupers[characterID]]");
+        if ($ifInCorp == NULL) {
+            $query = "DELETE FROM `superCapitalList` WHERE `characterID` = '$corpSupers[characterID]'";
             $result2 = mysql_query($query) or die(mysql_error());
         }
     }
