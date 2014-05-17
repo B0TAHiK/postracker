@@ -8,7 +8,7 @@ if ($loggedIN == 0) {
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/postracker\">pos monitor</a></li>"
+          echo "><a href=\"/pos\">pos monitor</a></li>"
        . "<li";
         if ($thisPage=="login")
             echo " id=\"currentpage\"";
@@ -45,7 +45,7 @@ _END;
             <li
 _END;
         if ($thisPage=="index")echo " id=\"currentpage\"";
-          echo "><a href=\"/postracker\">pos monitor</a></li>";
+          echo "><a href=\"/pos\">pos monitor</a></li>";
           if ($_SESSION[groupID] > 2) {
             echo "<li";
             if ($thisPage=="admin")

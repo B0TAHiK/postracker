@@ -1,8 +1,8 @@
 <?php
 
 //Requiring some libs...
-//define("PATH", "/var/www/pos/");
-define("PATH", "/var/www/postracker/");
+define("PATH", "/var/www/pos/");
+//define("PATH", "/var/www/postracker/");
 require_once PATH . 'db_con.php';
 require_once PATH . 'functions.php';
 //Connecting to DB...

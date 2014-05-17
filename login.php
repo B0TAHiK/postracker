@@ -64,7 +64,7 @@ _END;
                         <div class='error'>You logged in.<br>You will be redirected shortly.</div>
                         <script type="text/javascript">
                             var delay = 5000;
-                            setTimeout("document.location.href='/postracker'", delay);
+                            setTimeout("document.location.href='/pos'", delay);
                         </script>
 _END;
                     } else {

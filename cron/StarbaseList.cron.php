@@ -2,8 +2,8 @@
 
 set_time_limit(300);
 //Requiring some libs...
-//define("PATH", "/var/www/pos/");
-define("PATH", "/var/www/postracker/");
+define("PATH", "/var/www/pos/");
+//define("PATH", "/var/www/postracker/");
 require_once PATH . 'db_con.php';
 require_once PATH . 'functions.php';
 //Connecting to DB...
@@ -108,7 +108,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
         //If found, updating...
         if ($num === 1) {
             $msg .= " Found old record, updating... ";
-            $query = "UPDATE `poslist` SET `state` = '$state', `stateTimestamp` = '$stateTimestamp' WHERE `posID`='$posID'";
+            $query = "UPDATE `poslist` SET  `locationID` = '$locationID', `moonID` = '$moonID', `state` = '$state', `stateTimestamp` = '$stateTimestamp', `moonName` = '$moonName', `typeName` = '$typeName', `ownerID` = '$ownerID', `ownerName`= '$ownerName' WHERE `posID`='$posID'";
             $result = mysql_query($query);
             if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
         } else {
