@@ -56,7 +56,7 @@ _END;
             echo "<li";
             if ($thisPage=="supers")
             echo " id=\"currentpage\"";
-            echo"><a href=\"supercapitalMonitoring.php\">supercapitals</a></li>";
+            echo"><a href=\"superCapitalMonitoring.php\">supercapitals</a></li>";
           }
           echo "<li><a href=\"https://redalliance.pw\">forum</a></li><li";
           echo "><a href=\"logout.php\">logout</a></li>";

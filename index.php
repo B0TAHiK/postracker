@@ -38,14 +38,27 @@
                     $owners[] = $ownerlist[0]; 
                     }
                     $onwersCut = array_unique($owners);
+                    if (!isset($_POST[anchored])) {
+                        echo "<form action='index.php' method='post' align='right'><input type=hidden name='anchored' value='old'><input type=submit value='Show Anchored POSes' /></form>";
+                    } else {
+                         echo "<form action='index.php' method='post' align='right'><input type=submit value='Hide Anchored POSes' /></form>";
+                    }
                     //Making list of corps
                     foreach ($onwersCut as $owner):
+                        if (!isset($_POST[anchored])) {
+                                $MoreQuery = "AND `state` > 2";
+                            } else {
+                                $MoreQuery = "";
+                            }
                         //Getting information for each corp...
-                        $query = "SELECT * FROM `poslist` WHERE `ownerID` = $owner";
+                        $query = "SELECT * FROM `poslist` WHERE `ownerID` = '$owner' $MoreQuery";
                         $result = mysql_query($query) or die(mysql_error());
                         $data = array();
                         while ($poslist = mysql_fetch_assoc($result)) {
                             $data[] = $poslist;
+                        }
+                        if (count($data) <= 0) {
+                            continue;
                         }
                         $ownerName = $data[0][ownerName];
                         echo "Owner: <b>$ownerName</b>";

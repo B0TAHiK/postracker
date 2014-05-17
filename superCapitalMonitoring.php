@@ -37,7 +37,7 @@
                         $onwersCut = array_unique($owners);
                         foreach ($onwersCut as $owner):
                             if (!isset($_POST[old])) {
-                                $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 6 MONTH)";
+                                $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 3 MONTH)";
                             } else {
                                 $MoreQuery = "";
                             }
