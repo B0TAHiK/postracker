@@ -1,10 +1,11 @@
 <?php
 
 //Requiring some libs...
-define("PATH", "/var/www/pos/");
-//define("PATH", "/var/www/postracker/");
+//define("PATH", "/var/www/pos/");
+define("PATH", "/var/www/postracker/");
 require_once PATH . 'db_con.php';
 require_once PATH . 'functions.php';
+include PATH . 'XMPPHP/XMPP.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 mysql_connect($hostname, $username, $mysql_pass);
@@ -28,7 +29,9 @@ while($row = mysql_fetch_assoc($result)){
     	    'allianceID' => $row[allianceID],
     	    'lastNotifID' => $row[lastNotifID],
             'mailNotif' => $row[mailNotif],
-    	    'email' => $row[email]
+    	    'email' => $row[email],
+            'JID' => $row[JID],
+            'groupID' => $row[groupID]
         );
     }
 }
@@ -90,18 +93,19 @@ for($k = 0; $k < count($data); $k++){
     $num = mysql_num_rows($result);
     if($num === 0){
     	$msg .= " Inserting new notification... ";
-        $notixtxttosql = addslashes(ParsingNotifText($data[$k]['NotificationText']));
+        $notixtxttosql = ($data[$k]['typeID']==76) ? addslashes(ParsingNotifText($data[$k]['NotificationText'], 0, 0)) : addslashes(ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
     	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
     	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
     	$result = mysql_query($query);
     	if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
     } else $msg .= " Notification already exists.";
 }
-$msg .= "\nSending e-mails with new notifications";
+$msg .= "\nSending e-mails and with new notifications";
 for ($k = 0; $k < count($users); $k++){
     $msg .= "\nUser e-mail: " . $users[$k][email];
-    if($users[$k][mailNotif]==1){
-        $query = "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}'";
+    if($users[$k][mailNotif] > 0 && $users[$k][groupID] > 0){ //0 - none, 1 - email, 2 - jabber, 3 - all
+        $query = ($users[$k][groupID] == 1) ? "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}' AND `corporationID` = '{$users[$k][corporationID]}'" :
+         "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}'";
         $result = mysql_query($query);
         for ($j = 0; $j < mysql_num_rows($result); $j++){
             if(mysql_result($result, $j, 1)==76){
@@ -119,15 +123,28 @@ for ($k = 0; $k < count($users); $k++){
             } else $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
         }
         if($mailtext != NULL){
-            $msg .= (sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [ok]" : " [fail]";
+            if($users[$k][mailNotif] & 1) $msg .= (sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [mail ok]" : " [mail fail]";
+            if($users[$k][mailNotif] & 2) {
+                $conn = new XMPPHP_XMPP('redalliance.pw', 5222, 'RABot', 'wP5K5p8E', 'xmpphp', 'redalliance.pw', $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
+                try {
+                    $conn->connect();
+                    $conn->processUntil('session_start');
+                    $conn->presence();
+                    $conn->message($users[$k][JID], $mailtext);
+                    $conn->disconnect();
+                    $msg .= " [jabber ok]";
+                } catch(XMPPHP_Exception $e) {
+                    $msg .= " [jabber fail] " . $e->getMessage();
+                }
+            }
             $lastnotif = 0;
             for($j = 0; $j < count($data); $j++) if($data[$j]['notificationID'] > $users[$k]['lastNotifID'] && $lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
             if($lastnotif > 0){
                 $query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
                 $result = mysql_query($query);
             }
-        } else $msg .= " no new e-mails";
-    } else  $msg .= " doesn't wish receive e-mails";
+        } else $msg .= " no new notifications";
+    } else  $msg .= " doesn't wish or have permission to receive e-mails";
 }
 endlog($msg);
 

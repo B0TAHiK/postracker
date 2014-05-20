@@ -91,17 +91,29 @@ function sendmail($email, $subj, $text){
     return mail($email, $subject, $text, $headers);
 }
 
-function ParsingNotifText($text){
+function ParsingNotifText($text, $OwnerCorporationID, $OwnerAllianceID){
     $txtarr = yaml_parse($text);
     mysql_connect($hostname, $username, $mysql_pass);
     if(!mysql_error()) mysql_select_db($db_name);
+    if($OwnerCorporationID > 0){
+        $instxt = api_req("https://api.eveonline.com/corp/CorporationSheet.xml.aspx", "", "", "corporationID", $OwnerCorporationID, "", "");
+        array_push($txtarr[OwnerCorpName]=strval($instxt->result->corporationName));
+        array_push($txtarr[OwnerCorpTicker]=strval($instxt->result->ticker));
+    }
+    if($OwnerAllianceID > 0){
+        $instxt = api_req("https://api.eveonline.com/eve/AllianceList.xml.aspx", "", "", "", "", "", "");
+        $allyName = $instxt->xpath("/eveapi/result/rowset/row[@allianceID=$OwnerAllianceID]/@name");
+        $allyTicker = $instxt->xpath("/eveapi/result/rowset/row[@allianceID=$OwnerAllianceID]/@shortName");
+        array_push($txtarr[OwnerAllyName]=(string)$allyName[0][0]);
+        array_push($txtarr[OwnerAllyTicker]=(string)$allyTicker[0][0]);
+    }
     if($txtarr[aggressorID]){
         $instxt = api_req("https://api.eveonline.com/eve/CharacterName.xml.aspx", "", "", "IDs", $txtarr[aggressorID], "", "");
         $aggressorName = $instxt->xpath("/eveapi/result/rowset/row[@characterID=$txtarr[aggressorID]]/@name");
         array_push($txtarr[aggressorName]=(string)$aggressorName[0][0]);
     }
     if($txtarr[corpID] || $txtarr[aggressorCorpID]){
-    $instxt = ($txtarr[corpID]) ? api_req("https://api.eveonline.com/corp/CorporationSheet.xml.aspx", "", "", "corporationID", $txtarr[corpID], "", "") :
+        $instxt = ($txtarr[corpID]) ? api_req("https://api.eveonline.com/corp/CorporationSheet.xml.aspx", "", "", "corporationID", $txtarr[corpID], "", "") :
          api_req("https://api.eveonline.com/corp/CorporationSheet.xml.aspx", "", "", "corporationID", $txtarr[aggressorCorpID], "", "");
         array_push($txtarr[corpName]=strval($instxt->result->corporationName));
         array_push($txtarr[corpTicker]=strval($instxt->result->ticker));
@@ -155,14 +167,17 @@ function GenerateMailText($type, $sentDate, $str){ // http://wiki.eve-id.net/API
     } elseif($type == 75 || $type == 80 || $type == 86 || $type == 87 || $type == 88){
         $locname = ($type == 75) ? $strarr[moonName] : $strarr[solarSystemName];
         $mailtext .= $strarr[typeName] . " on " . $locname . " is under attack\n";
+        $mailtext .= "Owner: " . $strarr[OwnerCorpName] . " [" . $strarr[OwnerCorpTicker] . "] (" . $strarr[OwnerAllyName] . " [" . $strarr[OwnerAllyTicker] . "])" . "\n";
         $mailtext .=  "Aggressor: " . $strarr[aggressorName] . " from " . $strarr[corpName] . " [" . $strarr[corpTicker] . "] (" . $strarr[allyName] . " [" . $strarr[allyTicker] . "])" . "\n";
         $mailtext .= "Shield: " . round($strarr[shieldValue]*100) . "% Armor: " . round($strarr[armorValue]*100) . "% Hull: " . round($strarr[hullValue]*100) . "%\n";
     } elseif($type == 93){
         $mailtext .= $strarr[typeName] . " on " . $strarr[planetName] . " is under attack\n";
+        $mailtext .= "Owner: " . $strarr[OwnerCorpName] . " [" . $strarr[OwnerCorpTicker] . "] (" . $strarr[OwnerAllyName] . " [" . $strarr[OwnerAllyTicker] . "])" . "\n";
         $mailtext .=  "Aggressor: " . $strarr[aggressorName] . " from " . $strarr[corpName] . " [" . $strarr[corpTicker] . "] (" . $strarr[allyName] . " [" . $strarr[allyTicker] . "])" . "\n";
         $mailtext .= "Shield: " . round($strarr[shieldLevel]*100) . "%\n";
     } elseif($type == 77){
         $mailtext .= $strarr[typeName] . " in " . $strarr[solarSystemName] . " is under attack\n";
+        $mailtext .= "Owner: " . $strarr[OwnerCorpName] . " [" . $strarr[OwnerCorpTicker] . "] (" . $strarr[OwnerAllyName] . " [" . $strarr[OwnerAllyTicker] . "])" . "\n";
         $mailtext .= "Shield: " . round($strarr[shieldLevel]*100) . "%\n";
     } else{
         if($type == 37 || $type == 38) $mailtext .= "Sovereignty claim fails in " . $strarr[solarSystemName] . "\n";
