@@ -28,7 +28,7 @@
         $query = "UPDATE `users` SET `lastSeen` = NOW() WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID'";
         $result = mysql_query($query) or DIE(mysql_error());
         if ($groupID == 1 || $groupID == 2 || $groupID == 3) {
-            $_SESSION['corporationID'] = $row[corporationID];
+            $_SESSION['corporationID'] = $charInfo[corporationID];
             $loggedIN = 1;
             $_SESSION['groupID'] = $groupID;
             
