@@ -18,8 +18,7 @@
     $charInfo = mysql_fetch_assoc($resultAutorize);
     $groupID = $charInfo[groupID];
     $char = $charInfo[char];
-    $query = "INSERT INTO `logs` SET `requestTime` = '$rTime', `page` = '$uPage', `charName` = '$char', `groupID` = '$groupID', `IP` = '$uIP', `referer` = '$rReferer', `userAgent` = '$userAgent'";
-    $result = mysql_query($query) or die(mysql_error());
+    
     if (mysql_num_rows($resultAutorize) != 1) {
         setcookie(SID, $cookieSID, time()-60*60*24*30);
         $loggedIN = 0;
@@ -38,5 +37,7 @@
             $_SESSION['groupID'] = $groupID;
         }       
     }
+    $query = "INSERT INTO `logs` SET `requestTime` = '$rTime', `page` = '$uPage', `charName` = '$char', `groupID` = '$groupID', `loggedIN` = '$loggedIN', `IP` = '$uIP', `referer` = '$rReferer', `userAgent` = '$userAgent'";
+    $result = mysql_query($query) or die(mysql_error());
     mysql_close();
     ?>
