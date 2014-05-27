@@ -58,6 +58,9 @@ _END;
             echo " id=\"currentpage\"";
             echo"><a href=\"superCapitalMonitoring.php\">supercapitals</a></li>";
           }
+          echo "<li";
+          if ($thisPage=="settings")echo " id=\"currentpage\"";
+          echo "><a href=\"settings.php\">settings</a></li>";
           echo "<li><a href=\"https://redalliance.pw\">forum</a></li><li";
           echo "><a href=\"logout.php\">logout</a></li>";
           echo "</ul>";
