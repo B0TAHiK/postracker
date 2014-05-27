@@ -4,9 +4,14 @@ define("PATH", "/var/www/pos/");
 //define("PATH", "/var/www/postracker/");
 require_once PATH . 'db_con.php';
 require_once PATH . 'functions.php';
-mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-mysql_select_db($db_name) or die(mysql_error());
+$msg = date(DATE_RFC822) . "\nConnecting to DB... ";
+mysql_connect($hostname, $username, $mysql_pass);
+if(!mysql_error()) {
+    mysql_select_db($db_name);
+    if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
+} else endlog($msg . mysql_error());
 $query = "SELECT * FROM `users`";
+$msg .= "\nCollecting users API keys... ";
 $result = mysql_query($query);
 $keyIDarr = array();
 $vCodearr = array();
@@ -16,10 +21,12 @@ while($row = mysql_fetch_assoc($result)){
     $vCodearr[] = $row[vCode];
     $chararr[] = $row[char];
 }
+if(count($keyIDarr) > 0) $msg .= " found " . count($keyIDarr) . " API keys"; else endlog($msg . " found none");
 for ($k = 0; $k < count($keyIDarr); $k++) {
     $keyID = $keyIDarr[$k];
     $vCode = $vCodearr[$k];
     $char = $chararr[$k];
+    $msg .= "\nParsing info for key " . $keyID . " (" . $char . ")";
     $page = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
     $api = api_req($page, $keyID, $vCode, '', '', '', '');
     $characterID = $api->xpath("/eveapi/result/key/rowset/row[@characterName='$char']/@characterID");
@@ -28,6 +35,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $corporationID = strval($corporationID[0][corporationID]);
     $allianceID = $api->xpath("/eveapi/result/key/rowset/row[@characterName='$char']/@allianceID");
     $allianceID = strval($allianceID[0][allianceID]);
+    $msg .= ", characterID=" . $characterID . ", corporationID=" . $corporationID . ", allianceID=" . $allianceID;
     $query = "SELECT * FROM `allowedUsers` WHERE `characterID` = '$characterID' OR `corporationID`= '$corporationID' OR `allianceID` = '$allianceID' LIMIT 1";
     $result = mysql_query($query);
     if (mysql_num_rows($result) == 1) {
@@ -38,15 +46,19 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
             $groupID = 0;
             $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = mysql_query($query);
+            $msg .= " [wrong mask ". $maskAPI . "]";
         } else {
             $query = "UPDATE `users` SET `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = mysql_query($query);
+            $msg .= " [ok]";
         }
     } else {
         $groupID = 0;
         $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
         $result = mysql_query($query);
+        $msg .= " [not allowed]";
     }
 }
+endlog($msg);
 
 ?>
