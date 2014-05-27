@@ -70,7 +70,7 @@ _END;
                         echo<<<_END
                             <script type="text/javascript">
                                 var delay = 2000;
-                                setTimeout("document.location.href='/settings.php'", delay);
+                                setTimeout("document.location.href='settings.php'", delay);
                             </script>             
 _END;
                     } else {
