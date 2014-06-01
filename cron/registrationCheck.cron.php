@@ -35,25 +35,27 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $corporationID = strval($corporationID[0][corporationID]);
     $allianceID = $api->xpath("/eveapi/result/key/rowset/row[@characterName='$char']/@allianceID");
     $allianceID = strval($allianceID[0][allianceID]);
-    $msg .= ", characterID=" . $characterID . ", corporationID=" . $corporationID . ", allianceID=" . $allianceID;
+    $query = "SELECT `groupID` FROM `users` WHERE `keyID`='$keyID' LIMIT 1";
+    $result = mysql_query($query);
+    $groupID = mysql_result($result, 0);
+    $msg .= ", characterID=" . $characterID . ", corporationID=" . $corporationID . ", allianceID=" . $allianceID . ", groupID=" . $groupID;
     $query = "SELECT * FROM `allowedUsers` WHERE `characterID` = '$characterID' OR `corporationID`= '$corporationID' OR `allianceID` = '$allianceID' LIMIT 1";
     $result = mysql_query($query);
     if (mysql_num_rows($result) == 1) {
-        //Дописать разбанивалку
-        $neededMask = 49152;
         $maskAPI = get_mask($keyID, $vCode);
-        if (($maskAPI & $neededMask) <= 0) {
-            $groupID = 0;
+        if (($maskAPI & 49152) <= 0) {
+            if($groupID > 0) $groupID *= -1;
             $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = mysql_query($query);
             $msg .= " [wrong mask ". $maskAPI . "]";
         } else {
-            $query = "UPDATE `users` SET `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
+            if($groupID < 0) $groupID *= -1;
+            $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = mysql_query($query);
             $msg .= " [ok]";
         }
     } else {
-        $groupID = 0;
+        if($groupID > 0) $groupID *= -1;
         $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
         $result = mysql_query($query);
         $msg .= " [not allowed]";
