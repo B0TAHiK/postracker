@@ -1,11 +1,10 @@
 <?php
-define("PATH", "/var/www/pos/");
-//define("PATH", "/var/www/postracker/");
-require_once PATH . 'db_con.php';
-require_once PATH . 'functions.php';
+
+require_once dirname(__FILE__) . '/../db_con.php';
+require_once dirname(__FILE__) . '/../functions.php';
+
 mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
 mysql_select_db($db_name) or die(mysql_error());
-
 
 $query = "SELECT * FROM `logs` WHERE `requestTime` > DATE_SUB( NOW( ) , INTERVAL 5 MINUTE)";
 $result = mysql_query($query);
@@ -36,4 +35,5 @@ if ($i>0) {
     sendmail($email[0], $subj, $text);
     }
 }
+
 ?>

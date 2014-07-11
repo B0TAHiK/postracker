@@ -1,10 +1,8 @@
 <?php
 
 //Requiring some libs...
-define("PATH", "/var/www/pos/");
-//define("PATH", "/var/www/postracker/");
-require_once PATH . 'db_con.php';
-require_once PATH . 'functions.php';
+require_once dirname(__FILE__) . '/../db_con.php';
+require_once dirname(__FILE__) . '/../functions.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 mysql_connect($hostname, $username, $mysql_pass);

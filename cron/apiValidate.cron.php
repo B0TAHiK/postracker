@@ -1,9 +1,7 @@
 <?php
 //Requiring some libs...
-define("PATH", "/var/www/pos/");
-//define("PATH", "/var/www/postracker/");
-require_once PATH . 'db_con.php';
-require_once PATH . 'functions.php';
+require_once dirname(__FILE__) . '/../db_con.php';
+require_once dirname(__FILE__) . '/../functions.php';
 //Connecting to the DB...
 mysql_connect($hostname, $username, $mysql_pass);
 mysql_select_db($db_name);
@@ -29,13 +27,14 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $maskAPI = get_mask($keyID, $vCode);
     $page = "https://api.eveonline.com/account/apiKeyInfo.xml.aspx";
     $api = api_req($page, $keyID, $vCode, '', '', '', '');
-    $corporationName = $api->result->key->rowset->row->attributes()->corporationName;
+    //$corporationName = $api->result->key->rowset->row->attributes()->corporationName;
+    $corporationName = $api->xpath("/eveapi/result/key/rowset/row/@corporationName");
     if ($mask != $maskAPI) {
         $query = "UPDATE `apilist` SET `mask` = '$maskAPI' WHERE `keyID` = '$keyID'";
         $result = mysql_query($query);
     }
     if ($corp != $corporationName) {
-        $query = "UPDATE `apilist` SET `corporation` = '$corporationName' WHERE `keyID` = '$keyID'";
+        $query = "UPDATE `apilist` SET `corporation` = '{$corporationName[0][0]}' WHERE `keyID` = '$keyID'";
         $result = mysql_query($query);
     }
 }

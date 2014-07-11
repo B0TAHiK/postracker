@@ -23,8 +23,9 @@ function api_req($page, $keyID, $vCode, $kindid, $id, $kindid2, $id2) {
 function get_mask($keyID, $vCode) {
     $page = "https://api.eveonline.com/account/apiKeyInfo.xml.aspx";
     $api = api_req($page, $keyID, $vCode, '', '', '', '');
-    $maskAPI = $api->result->key->attributes()->accessMask;
-    return $maskAPI;
+    //$maskAPI = $api->result->key->attributes()->accessMask;
+    $maskAPI = $api->xpath("/eveapi/result/key/@accessMask");
+    return $maskAPI[0][0];
 }
 
 function calc_fuel_time($typeID, $systemID, $allyownerID, $msg) {
