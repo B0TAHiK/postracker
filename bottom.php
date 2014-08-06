@@ -1,9 +1,14 @@
 <?php
 echo<<<_END
-    <div class="bottom">
-        <span id="bottom">Made by greg2010 & atap</span>
-   
-   </div>
-
+    <hr>
+        <div class="row">
+            <div class="col-xs-12">
+                <footer>
+                    <div class="container">
+                    Made by greg2010 & atap
+                    </div>
+                </footer>
+            </div>
+        </div>
 _END;
 

@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once 'db_con.php';
+    require_once 'init.php';
     $db->openConnection();
     $SID = session_id();
     $cookieSID = $db->sanitizeMySQL($_COOKIE[SID]);

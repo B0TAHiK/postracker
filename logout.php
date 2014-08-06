@@ -1,11 +1,9 @@
 <?php
 session_start();
-require'db_con.php';
-    require_once 'sane.php';
+    require_once 'init.php';
+    require_once 'db_con.php';
     $db->openConnection();
-    
     $SID = session_id();
-    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
     $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
     $result = $db->query($query);
     if ($db->countRows($result) != 1) {
@@ -15,7 +13,6 @@ require'db_con.php';
         setcookie(SID, $cookieSID, time()-60*60*24*30);
         $loggedIN = 0;
     }
-mysql_close();
 ?>
 <script type="text/javascript">
 var delay = 500;

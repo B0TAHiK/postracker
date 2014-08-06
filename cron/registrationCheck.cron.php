@@ -2,23 +2,22 @@
 
 require_once dirname(__FILE__) . '/../db_con.php';
 require_once dirname(__FILE__) . '/../init.php';
+
 $msg = date(DATE_RFC822) . "\nConnecting to DB... ";
 $db->openConnection();
-if(!mysql_error()) {
-    
-    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
-} else logs::endlog($msg . mysql_error());
 $query = "SELECT * FROM `users`";
 $msg .= "\nCollecting users API keys... ";
 $result = $db->query($query);
 $keyIDarr = array();
 $vCodearr = array();
 $chararr = array();
+
 while($row = $db->fetchAssoc($result)){
     $keyIDarr[] = $row[keyID];
     $vCodearr[] = $row[vCode];
     $chararr[] = $row[char];
 }
+
 if(count($keyIDarr) > 0) $msg .= " found " . count($keyIDarr) . " API keys"; else logs::endlog($msg . " found none");
 for ($k = 0; $k < count($keyIDarr); $k++) {
     $keyID = $keyIDarr[$k];

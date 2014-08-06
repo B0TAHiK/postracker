@@ -37,10 +37,10 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $page = "https://api.eveonline.com/corp/MemberTracking.xml.aspx";
     $kindid = "extended";
     $id = "1";
-    $api = api::api_req($page, $keyID, $vCode, $kindid, $id, '', '');
+    $api = api::api_req($page, $keyID, $vCode, $kindid, $id);
     //Getting corp information...
     $pageCorp = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx";
-    $apiCorp = api::api_req($pageCorp, $keyID, $vCode, '', '', '', '')->result;
+    $apiCorp = api::api_req($pageCorp, $keyID, $vCode)->result;
     $apiSheet = xml2array($apiCorp);
     $corporationID = strval($apiSheet[corporationID]);
     $corporationName = strval($apiSheet[corporationName]);
