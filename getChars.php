@@ -1,13 +1,13 @@
 <?php
     session_start();
-    require_once 'functions.php';
+    require_once 'init.php';
     require'db_con.php';
     echo "<link rel='stylesheet' type='text/css' href='css/style.css'>";
     $keyID = $_POST[keyID];
     $vCode = $_POST[vCode];
-    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-    mysql_select_db($db_name) or die(mysql_error());
-    $mask = get_mask($keyID, $vCode);
+    $db->openConnection();
+    
+    $mask = api::get_mask($keyID, $vCode);
     $maskNeeded = 49152;
     if (($mask & $maskNeeded) <= 0) {
         //No Access
@@ -15,7 +15,7 @@
     }
     echo '<select name="chars" size="1">';
     $page = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
-    $api = api_req($page, $keyID, $vCode, '', '');
+    $api = api::api_req($page, $keyID, $vCode, '', '');
     $i = 0;
     foreach ($api->result->key->rowset->row as $row):
         $data[$i] = array (
@@ -41,8 +41,8 @@
         'allianceID' => $allianceID[0]
     );
     $query = "SELECT * FROM `allowedUsers` WHERE `characterID` = '$charID[0]' OR `corporationID`= '$corporationID[0]' OR `allianceID` = '$allianceID[0]' LIMIT 1";
-    $result = mysql_query($query) or die(mysql_error());
-    if (mysql_num_rows($result) === 1) {
+    $result = $db->query($query);
+    if ($db->countRows($result) === 1) {
         $_SESSION["$char[0]"]["allowed"] = 1;
         $highlight[$i] = "id=allowed";
     } else {

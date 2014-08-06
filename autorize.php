@@ -1,11 +1,9 @@
 <?php
     session_start();
-    require_once 'sane.php';
     require_once 'db_con.php';
-    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-    mysql_select_db($db_name) or die(mysql_error());
+    $db->openConnection();
     $SID = session_id();
-    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
+    $cookieSID = $db->sanitizeMySQL($_COOKIE[SID]);
     
     $rTime = date('Y-m-d H:i:s', $_SERVER[REQUEST_TIME]);
     $uPage = $_SERVER[REQUEST_URI];
@@ -14,18 +12,20 @@
     $userAgent = $_SERVER[HTTP_USER_AGENT];
     
     $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
-    $resultAutorize = mysql_query($query) or die(mysql_error());
-    $charInfo = mysql_fetch_assoc($resultAutorize);
+    $resultAutorize = $db->query($query);
+    $charInfo = $db->fetchAssoc($resultAutorize);
     $groupID = $charInfo[groupID];
     $char = $charInfo[char];
     
-    if (mysql_num_rows($resultAutorize) != 1) {
+    $_SESSION['userID'] = $charInfo[ID];
+    
+    if ($db->CountRows($resultAutorize) != 1) {
         setcookie(SID, $cookieSID, time()-60*60*24*30);
         $loggedIN = 0;
     } else {
-        $row = mysql_fetch_assoc($resultAutorize);
+        $row = $db->fetchAssoc($resultAutorize);
         $query = "UPDATE `users` SET `lastSeen` = NOW() WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID'";
-        $result = mysql_query($query) or DIE(mysql_error());
+        $result = $db->query($query);
         if ($groupID == 1 || $groupID == 2 || $groupID == 3) {
             $_SESSION['corporationID'] = $charInfo[corporationID];
             $loggedIN = 1;
@@ -38,6 +38,6 @@
         }       
     }
     $query = "INSERT INTO `logs` SET `requestTime` = '$rTime', `page` = '$uPage', `charName` = '$char', `groupID` = '$groupID', `loggedIN` = '$loggedIN', `IP` = '$uIP', `referer` = '$rReferer', `userAgent` = '$userAgent'";
-    $result = mysql_query($query) or die(mysql_error());
-    mysql_close();
+    $result = $db->query($query);
+    $db->closeConnection();
     ?>

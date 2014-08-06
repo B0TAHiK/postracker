@@ -48,15 +48,15 @@ _END;
                 if ($_POST[go] == 'sent') {
                     $email = sanitizeMySQL($_POST['email']);
                     $password = md5($_POST['password']);
-                    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-                    mysql_select_db($db_name) or die(mysql_error());
+                    $db->openConnection();
+                    
                     $query = "SELECT `id` FROM `users` WHERE (`email`='$email' AND `password`='$password') LIMIT 1";
-                    $result = mysql_query($query);
+                    $result = $db->query($query);
                     print(mysql_error());
-                    If (mysql_num_rows($result) == 1) {
+                    If ($db->countRows($result) == 1) {
                         $lastSID = session_id();
                         $query = "UPDATE `users` SET `lastSID` = '$lastSID' WHERE `email` = '$email'";
-                        $result = mysql_query($query);
+                        $result = $db->query($query);
                         print(mysql_error());
                         setcookie(SID, $lastSID, time()+60*60*24*30);
                         ob_end_flush();

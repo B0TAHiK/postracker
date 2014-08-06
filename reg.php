@@ -20,7 +20,7 @@
             <div id="topic"><span id="topic">registration form</span></div>
             <div id="mainbody">
         <?php
-        require_once 'functions.php';
+        require_once 'init.php';
         require_once 'db_con.php';
         require_once 'sane.php';
         if ($loggedIN === 1){ 
@@ -79,24 +79,24 @@ _END;
                 $keyID = sanitizeMySQL($_POST[keyID]);
                 $vCode = sanitizeMySQL($_POST[vCode]);
                 $char = sanitizeMySQL($_POST[chars]);
-                mysql_connect($hostname, $username, $mysql_pass);
-                mysql_select_db($db_name);
+                $db->openConnection();
+                
                 $query = "SELECT `email` FROM `users` WHERE `email`='$email' LIMIT 1";
-                $result = mysql_query($query);
-                if (mysql_num_rows($result) == 1):
+                $result = $db->query($query);
+                if ($db->countRows($result) == 1):
                     echo "<div class='error'>There is user with e-mail <b>" . $email . "</b>!</div>";
                     ob_end_flush();
                     exit;
                 else:
                     if ($_SESSION[$char][allowed] === 1) {
-                        require_once 'functions.php';
+                        require_once 'init.php';
                         $characterID = $_SESSION[$char][characterID];
                         $corporationID = $_SESSION[$char][corporationID];
                         $allianceID = $_SESSION[$char][allianceID];
                         $groupID = 1;
                         $lastSID = session_id();
                         $query = "INSERT INTO `users` SET `email` = '$email', `password` = '$password', `keyID` = '$keyID', `vCode` = '$vCode', `groupID` = '$groupID', `char` = '$char', `characterID` = '$characterID', `corporationID` = '$corporationID', `allianceID` = '$allianceID', `lastSID` = '$lastSID'";
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = $db->query($query);
                         if ($result) {
                             echo<<<_END
                             <div class="error">Successfully registered!<br>You will be redirected shortly.</div>

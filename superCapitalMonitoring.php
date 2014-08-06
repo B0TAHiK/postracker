@@ -19,14 +19,14 @@
                     If ($loggedIN = 1 && $_SESSION[groupID] > 1){
                         //Requiring some libs...
                         require_once 'db_con.php';
-                        require_once 'functions.php';
-                        mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-                        mysql_select_db($db_name) or die(mysql_error());
+                        require_once 'init.php';
+                        $db->openConnection();
+                        
                         //Getting corps...
                         $query = "SELECT `corporationName` FROM `superCapitalList`";
-                        $result = mysql_query($query);
+                        $result = $db->query($query);
                         $owners = array();
-                        while ($ownerlist = mysql_fetch_row($result)) {
+                        while ($ownerlist = $db->fetchRow($result)) {
                             $owners[] = $ownerlist[0]; 
                         }
                         if (!isset($_POST[old])) {
@@ -42,10 +42,10 @@
                                 $MoreQuery = "";
                             }
                             $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner' $MoreQuery";
-                            $result = mysql_query($query) or die(mysql_error());
+                            $result = $db->query($query);
                             $data = array();
                             $i = 0;
-                            while ($superCapList = mysql_fetch_assoc($result)) {
+                            while ($superCapList = $db->fetchAssoc($result)) {
                                 $data[] = $superCapList;
                                 $i++;
                             }

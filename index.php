@@ -1,6 +1,7 @@
 <?php
     $thisPage="index";
     require_once 'autorize.php';
+    require_once 'init.php';
 ?>
 <html>
     <head>
@@ -19,9 +20,7 @@
                 If ($loggedIN === 1){
                     //Requiring some libs...
                     require_once 'db_con.php';
-                    require_once 'functions.php';
-                    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-                    mysql_select_db($db_name) or die(mysql_error());
+                    $db->openConnection();
                     //Getting corps...
                     switch ($_SESSION[groupID]) {
                         case 1:
@@ -32,9 +31,9 @@
                         $query = "SELECT `ownerID` FROM `poslist`";
                             break;
                     }
-                    $result = mysql_query($query);
+                    $result = $db->query($query);
                     $owners = array();
-                    while ($ownerlist = mysql_fetch_row($result)) {
+                    while ($ownerlist = $db->fetchRow($result)) {
                     $owners[] = $ownerlist[0]; 
                     }
                     $onwersCut = array_unique($owners);
@@ -50,11 +49,12 @@
                             } else {
                                 $MoreQuery = "";
                             }
+                            
                         //Getting information for each corp...
-                        $query = "SELECT * FROM `poslist` WHERE `ownerID` = '$owner' $MoreQuery";
-                        $result = mysql_query($query) or die(mysql_error());
+                        $query = "SELECT * FROM `poslist` WHERE `ownerID` = '$owner'" . $MoreQuery;
+                        $result = $db->query($query);
                         $data = array();
-                        while ($poslist = mysql_fetch_assoc($result)) {
+                        while ($poslist = $db->fetchAssoc($result)) {
                             $data[] = $poslist;
                         }
                         if (count($data) <= 0) {
@@ -77,8 +77,8 @@ _END;
                         $i=0;
                         //Parsing each POS...
                         foreach ($data as $table):
-                            $time = hoursToDays($table[time]);
-                            $rftime = hoursToDays($table[rfTime]);
+                            $time = posmonCalculations::hoursToDays($table[time]);
+                            $rftime = posmonCalculations::hoursToDays($table[rfTime]);
                             $locationName = explode(" ", $table[moonName]);
                             $typeTemp = explode(" ", $table[typeName]);
                             $posType = $typeTemp[0];
@@ -113,11 +113,11 @@ _END;
                             }
                             
                             $query = "SELECT * FROM `silolist` WHERE `posID` = '$posID'";
-                            $result = mysql_query($query);
-                            $numSilo = mysql_num_rows($result);
+                            $result = $db->query($query);
+                            $numSilo = $db->countRows($result);
                             if ($numSilo > 0) {
                                 $silo = array();
-                                while ($silolist = mysql_fetch_assoc($result)) {
+                                while ($silolist = $db->fetchAssoc($result)) {
                                     $silo[] = $silolist;
                                 }
                                 $j=0;

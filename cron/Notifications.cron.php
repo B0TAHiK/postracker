@@ -2,23 +2,23 @@
 
 //Requiring some libs...
 require_once dirname(__FILE__) . '/../db_con.php';
-require_once dirname(__FILE__) . '/../functions.php';
+require_once dirname(__FILE__) . '/../init.php';
 include dirname(__FILE__) . '/../XMPPHP/XMPP.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
-mysql_connect($hostname, $username, $mysql_pass);
+$db->openConnection();
 if(!mysql_error()) {
-    mysql_select_db($db_name);
-    if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
-} else endlog($msg . mysql_error());
+    
+    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+} else logs::endlog($msg . mysql_error());
 $query = "SELECT * FROM `users`";
-$result = mysql_query($query);
+$result = $db->query($query);
 //Getting APIs from DB...
 $msg .= "\nCollecting API keys... ";
 $users = array();
 $deld = array();
-while($row = mysql_fetch_assoc($result)){
-    if((get_mask($row[keyID], $row[vCode]) & 49152) > 1){ // Notifications & NotificationTexts
+while($row = $db->fetchAssoc($result)){
+    if((api::get_mask($row[keyID], $row[vCode]) & 49152) > 1){ // Notifications & NotificationTexts
         $users[] = array(
 		    'keyID' => $row[keyID],
     	    'vCode' => $row[vCode],
@@ -33,12 +33,12 @@ while($row = mysql_fetch_assoc($result)){
         );
     }
 }
-if(count($users) > 0) $msg .= " found " . count($users) . " API keys"; else endlog($msg . " found none");
+if(count($users) > 0) $msg .= " found " . count($users) . " API keys"; else logs::endlog($msg . " found none");
 $i=0;
 for ($k = 0; $k < count($users); $k++) {
     //Getting XML...
     $page = "https://api.eveonline.com/char/Notifications.xml.aspx";
-    $api = api_req($page, $users[$k][keyID], $users[$k][vCode], 'characterID', $users[$k][characterID], '', '');
+    $api = api::api_req($page, $users[$k][keyID], $users[$k][vCode], 'characterID', $users[$k][characterID], '', '');
     $msg .=  "\nCurrent Time: " . strval($api->currentTime) . " Cached Until: " . strval($api->cachedUntil);
     //Parsing XML...
     $msg .= "\nParsing Notifications for key " . $users[$k][keyID];
@@ -86,16 +86,16 @@ $msg .= "\nAdd Notifications to DB";
 for($k = 0; $k < count($data); $k++){
 	$msg .= "\nNotifications id " . $data[$k]['notificationID'] . "... ";
 	$query = "SELECT `notificationID` FROM `notifications` WHERE `notificationID`='{$data[$k]['notificationID']}' LIMIT 1";
-    $result = mysql_query($query);
-    if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
-    $num = mysql_num_rows($result);
+    $result = $db->query($query);
+    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+    $num = $db->countRows($result);
     if($num === 0){
     	$msg .= " Inserting new notification... ";
         $notixtxttosql = ($data[$k]['typeID']==76) ? addslashes(ParsingNotifText($data[$k]['NotificationText'], 0, 0)) : addslashes(ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
     	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
     	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
-    	$result = mysql_query($query);
-    	if(!mysql_error()) $msg .= "[ok]"; else endlog($msg . mysql_error());
+    	$result = $db->query($query);
+    	if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
     } else $msg .= " Notification already exists.";
 }
 $msg .= "\nSending e-mails and jabber message with new notifications";
@@ -105,9 +105,9 @@ for ($k = 0; $k < count($users); $k++){
         $mailtext = NULL;
         $query = ($users[$k][groupID] == 1) ? "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}' AND `corporationID` = '{$users[$k][corporationID]}'" :
          "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}'";
-        $result = mysql_query($query);
-        //$msg .= " || " . mysql_num_rows($result) . " || ";
-        for ($j = 0; $j < mysql_num_rows($result); $j++){
+        $result = $db->query($query);
+        //$msg .= " || " . $db->countRows($result) . " || ";
+        for ($j = 0; $j < $db->countRows($result); $j++){
             //$msg .= " :: " . mysql_result($result, $j, 0) . " :: ";
             if(mysql_result($result, $j, 1)==76){
                 $tmparr = yaml_parse(mysql_result($result, $j, 3));
@@ -143,11 +143,11 @@ for ($k = 0; $k < count($users); $k++){
             for($j = 0; $j < count($data); $j++) if($data[$j]['notificationID'] > $users[$k]['lastNotifID'] && $lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
             if($lastnotif > 0){
                 $query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
-                $result = mysql_query($query);
+                $result = $db->query($query);
             }
         } else $msg .= " no new notifications";
     } else  $msg .= " doesn't wish or have permission to receive e-mails";
 }
-endlog($msg);
+logs::endlog($msg);
 
 ?>

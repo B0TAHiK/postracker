@@ -19,8 +19,8 @@
             If ($loggedIN > 0){
                 if ($_POST[go] != 'sent') {
                     $query = "SELECT * FROM `users` WHERE `characterID` = '$charInfo[characterID]' LIMIT 1";
-                    $result = mysql_query($query);
-                    $userInfo = mysql_fetch_assoc($result);
+                    $result = $db->query($query);
+                    $userInfo = $db->fetchAssoc($result);
                     $mailNotif = $userInfo[mailNotif];
                     $JID = $userInfo[JID];
                     if ($mailNotif > 0) {
@@ -64,7 +64,7 @@ _END;
                         $notif = $_SESSION[groupID];
                     }
                     $query = "UPDATE `users` SET `mailNotif` = '$notif', `JID` = '$JID' WHERE `characterID` = '$charInfo[characterID]'";
-                    $result = mysql_query($query);
+                    $result = $db->query($query);
                     if ($result) {
                         echo "<div class='error'>Information updated.</div>";
                         echo<<<_END

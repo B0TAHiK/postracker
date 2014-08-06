@@ -1,16 +1,16 @@
 <?php
 
 require_once dirname(__FILE__) . '/../db_con.php';
-require_once dirname(__FILE__) . '/../functions.php';
+require_once dirname(__FILE__) . '/../init.php';
 
-mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-mysql_select_db($db_name) or die(mysql_error());
+$db->openConnection();
+
 
 $query = "SELECT * FROM `logs` WHERE `requestTime` > DATE_SUB( NOW( ) , INTERVAL 5 MINUTE)";
-$result = mysql_query($query);
+$result = $db->query($query);
 $i=0;
 
-while ($logs = mysql_fetch_assoc($result)) {
+while ($logs = $db->fetchAssoc($result)) {
     $logGroupID = $logs[groupID];
     $logLoggedIN = $logs[loggedIN];
     if ($logGroupID > 0 AND $logLoggedIN == 0) {
@@ -30,8 +30,8 @@ if ($i>0) {
     $subj = "SECURITY BREACH!!!";
     $adminGroupID = 3;
     $query = "SELECT `email` FROM `users` WHERE `groupID` = '$adminGroupID'";
-    $result = mysql_query($query);
-    while ($email = mysql_fetch_row($result)) {
+    $result = $db->query($query);
+    while ($email = $db->fetchRow($result)) {
     sendmail($email[0], $subj, $text);
     }
 }

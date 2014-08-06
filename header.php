@@ -19,16 +19,16 @@ _END;
           echo "><a href=\"reg.php\">register</a></li>";
           echo "</ul>";
 } else {
-    mysql_connect($hostname, $username, $mysql_pass) or die(mysql_error());
-    mysql_select_db($db_name) or die(mysql_error());
-    $cookieSID = sanitizeMySQL($_COOKIE[SID]);
+    $db->openConnection();
+    $cookieSID = $db->sanitizeMySQL($_COOKIE[SID]);
     $query = "SELECT * FROM `users` WHERE `lastSID` = '$SID' OR `lastSID` = '$cookieSID' LIMIT 1";
-    $result = mysql_query($query) or die(mysql_error());
-    $charInfo = mysql_fetch_assoc($result);
+    $result = $db->query($query);
+    $charInfo = $db->fetchAssoc($result);
     $groupID = $charInfo[groupID];
     $query = "SELECT * FROM `groups` WHERE `id` = '$groupID' LIMIT 1";
-    $result = mysql_query($query);
-    $groupName = mysql_result($result, 0, $field = 1);
+    $result = $db->query($query);
+    $groups = $db->fetchAssoc($result);
+    $groupName = $groups[name];
      echo<<<_END
         <div id='head'><img class='logo' src=img/lg2.png>
         <span id='toptext'>POS tracker</span>

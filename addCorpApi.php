@@ -39,21 +39,21 @@
 _END;
                     } else {
                     require_once 'sane.php';
-                    require_once 'functions.php';
+                    require_once 'init.php';
                     $keyID = sanitizeMySQL($_POST[keyID]);
                     $vCode = sanitizeMySQL($_POST[vCode]);
                     
                     $page = "https://api.eveonline.com/account/apiKeyInfo.xml.aspx";
-                    $api = api_req($page, $keyID, $vCode, '', '', '', '');
+                    $api = api::api_req($page, $keyID, $vCode, '', '', '', '');
                     if (!($api->xpath("/eveapi/error[@code]")) AND ($api->xpath("/eveapi/result/key[@type='Corporation']"))) {
                         $query = "SELECT * FROM `apilist` WHERE `keyID` = '$keyID' AND `vCode` = '$vCode' LIMIT 1";
-                        $result = mysql_query($query);
-                        if (mysql_num_rows($result) == 0) {
-                            $maskAPI = get_mask($keyID, $vCode);
+                        $result = $db->query($query);
+                        if ($db->countRows($result) == 0) {
+                            $maskAPI = api::get_mask($keyID, $vCode);
                             if ($maskAPI & 655370 > 0 || $maskAPI & 35309576) {
                                 $corporationName = $api->result->key->rowset->row->attributes()->corporationName;
                                 $query = "INSERT INTO `apilist` SET `keyID` = '$keyID', `vCode` = '$vCode', `mask` = '$maskAPI', `corporation` = '$corporationName'";
-                                $result = mysql_query($query);
+                                $result = $db->query($query);
                                 if ($result) {
                                 echo "<div class='error'>API key added.</div>";
                                 echo<<<_END
@@ -77,7 +77,7 @@ _END;
                     
                     
 //                    $query = "UPDATE `users` SET `mailNotif` = '$notif', `JID` = '$JID' WHERE `characterID` = '$charInfo[characterID]'";
-//                    $result = mysql_query($query);
+//                    $result = $db->query($query);
 //                    if ($result) {
 //                        echo "<div class='error'>Information updated.</div>";
 //                        echo<<<_END
