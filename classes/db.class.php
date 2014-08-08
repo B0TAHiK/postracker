@@ -175,6 +175,19 @@ class db {
             return $e;
         }
     }
+    
+    public function getMysqlResult($result, $i = NULL) {
+        try {
+            $row = $this->fetchRow($result);
+            if ($i) {
+                return $row[$i];
+            } else {
+                return $row[0];
+            }
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
   
     public function toArray($result) {
         $results = array();

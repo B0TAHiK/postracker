@@ -139,7 +139,7 @@ for ($i = 0; $i < $db->countRows($result); $i++){
     $posID = $db->fetchRow($result)[$i];
     $query2 = "SELECT `posID` FROM `poslist` WHERE `posID`='$posID'";
     $result2 = $db->query($query);
-    iif(gettype($result2) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 2:" . $result2);
+    if(gettype($result2) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 2:" . $result2);
     if($db->countRows($result2)==0){
         $query3 = "DELETE FROM `silolist` WHERE `posID`='$posID'";
         $result3 = $db->query($query3);

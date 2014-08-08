@@ -1,5 +1,17 @@
 <?php
-function autoloader($class) {
-    include 'classes/' . $class . '.class.php';
+spl_autoload_register("autoload");
+
+function autoload($class_name)
+{
+    $baseDir = dirname(__FILE__);
+    $fileName = "$baseDir/classes/$class_name.class.php";
+    if (file_exists($fileName))
+    {
+        require_once $fileName;
+        return;
+    }
 }
-spl_autoload_register('autoloader');
+
+
+require_once '/Twig/Autoloader.php';
+Twig_Autoloader::register();
