@@ -1,6 +1,6 @@
 <?php
-set_time_limit(300);
 
+set_time_limit(300);
 //Requiring some libs...
 require_once dirname(__FILE__) . '/../db_con.php';
 require_once dirname(__FILE__) . '/../init.php';
@@ -8,14 +8,13 @@ require_once dirname(__FILE__) . '/../init.php';
 
 $msg = "Connecting to DB... ";
 $db->openConnection();
-if ($db->pingServer() === False) {
-    $msg .= "\n[fail]Server is not responding!";
-}
+$msg .= ($db->pingServer() === False) ? "[fail] Server is not responding!" : "[ok]";
 //StarbaseList parsing...
 $msg .= "\nCollecting API keys... ";
 $page = "https://api.eveonline.com/corp/StarbaseList.xml.aspx";
 $query = "SELECT * FROM `apilist`";
 $result = $db->query($query);
+if(gettype($result) != object) logs::endlog($msg . $result);
 //Getting APIs from DB...
 $keyIDarr = array();
 $vCodearr = array();
@@ -123,4 +122,5 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
 }
 $db->closeConnection();
 logs::endlog($msg);
+
 ?>

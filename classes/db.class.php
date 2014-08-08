@@ -167,6 +167,7 @@ class db {
             return $e;
         }
     }
+
     public function fetchRow($result) {
         try {
             return mysqli_fetch_row($result);
@@ -174,7 +175,19 @@ class db {
             return $e;
         }
     }
-        
+  
+    public function toArray($result) {
+        $results = array();
+        try {
+            while(($row = $result->fetch_assoc()) != false) {
+                $results[] = $row;
+            }
+            return $results;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
     private function sanitizeString($var) {
         $var = stripslashes($var);
         $var = strip_tags($var);

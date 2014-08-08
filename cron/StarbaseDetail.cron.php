@@ -1,4 +1,5 @@
 <?php
+
 set_time_limit(3600);
 //Requiring some libs...
 require_once dirname(__FILE__) . '/../db_con.php';
@@ -6,13 +7,12 @@ require_once dirname(__FILE__) . '/../init.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 $db->openConnection();
-if ($db->pingServer() === False) {
-    $msg .= "\n[fail]Server is not responding!";
-}
+$msg .= ($db->pingServer() === False) ? "[fail] Server is not responding!" : "[ok]";
 $query = "SELECT * FROM `apilist`";
 $result = $db->query($query);
 //Getting APIs from DB...
 $msg .= "\nCollecting API keys... ";
+if(gettype($result) != object) logs::endlog($msg . $result);
 $keyIDarr = array();
 $vCodearr = array();
 while($row = $db->fetchAssoc($result)){

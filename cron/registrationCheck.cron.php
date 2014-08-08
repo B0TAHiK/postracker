@@ -5,9 +5,11 @@ require_once dirname(__FILE__) . '/../init.php';
 
 $msg = date(DATE_RFC822) . "\nConnecting to DB... ";
 $db->openConnection();
-$query = "SELECT * FROM `users`";
+$msg .= ($db->pingServer() === False) ? "[fail] Server is not responding!" : "[ok]";
 $msg .= "\nCollecting users API keys... ";
+$query = "SELECT * FROM `users`";
 $result = $db->query($query);
+if(gettype($result) != object) logs::endlog($msg . $result);
 $keyIDarr = array();
 $vCodearr = array();
 $chararr = array();
@@ -34,27 +36,32 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $allianceID = strval($allianceID[0][allianceID]);
     $query = "SELECT `groupID` FROM `users` WHERE `keyID`='$keyID' LIMIT 1";
     $result = $db->query($query);
-    $groupID = mysql_result($result, 0);
+    if(gettype($result) != object) logs::endlog($msg . $result);
+    $groupID = $db->fetchRow($result)[0];
     $msg .= ", characterID=" . $characterID . ", corporationID=" . $corporationID . ", allianceID=" . $allianceID . ", groupID=" . $groupID;
     $query = "SELECT * FROM `allowedUsers` WHERE `characterID` = '$characterID' OR `corporationID`= '$corporationID' OR `allianceID` = '$allianceID' LIMIT 1";
     $result = $db->query($query);
+    if(gettype($result) != object) logs::endlog($msg . $result);
     if ($db->countRows($result) == 1) {
         $maskAPI = api::get_mask($keyID, $vCode);
         if (($maskAPI & 49152) <= 0) {
             if($groupID > 0) $groupID *= -1;
             $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = $db->query($query);
+            if(gettype($result) != object) logs::endlog($msg . $result);
             $msg .= " [wrong mask ". $maskAPI . "]";
         } else {
             if($groupID < 0) $groupID *= -1;
             $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
             $result = $db->query($query);
+            if(gettype($result) != object) logs::endlog($msg . $result);
             $msg .= " [ok]";
         }
     } else {
         if($groupID > 0) $groupID *= -1;
         $query = "UPDATE `users` SET `groupID` = '$groupID', `characterID` = '$characterID', `corporationID`= '$corporationID', `allianceID` = '$allianceID' WHERE `keyID`='$keyID'";
         $result = $db->query($query);
+        if(gettype($result) != object) logs::endlog($msg . $result);
         $msg .= " [not allowed]";
     }
 }

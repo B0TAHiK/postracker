@@ -1,12 +1,11 @@
 <?php
-/**
- * Description of notifications
- *
- * @author Григорий
- */
+
+require_once dirname(__FILE__) . '/../db_con.php';
+
 class notifications {
     public function ParsingNotifText($text, $OwnerCorporationID, $OwnerAllianceID){
         $txtarr = yaml_parse($text);
+        $db = db::getInstance();
         $db->openConnection();
         if(!mysql_error()) 
         if($OwnerCorporationID > 0){
@@ -42,29 +41,29 @@ class notifications {
         if($txtarr[typeID]){
             $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='$txtarr[typeID]' LIMIT 1";
             $result = $db->query($query);
-            array_push($txtarr[typeName]=mysql_result($result, 0));
+            array_push($txtarr[typeName]=$db->fetchRow($result)[0]);
         }
         if($txtarr[wants]){
             for($i=0; $i < count($txtarr[wants]); $i++){
                 $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='{$txtarr[wants][$i][typeID]}' LIMIT 1";
                 $result = $db->query($query);
-                array_push($txtarr[wants][$i][typeName]=mysql_result($result, 0));
+                array_push($txtarr[wants][$i][typeName]=$db->fetchRow($result)[0]);
             }
         }
         if($txtarr[moonID]){
             $query = "SELECT `itemName` FROM  `mapDenormalize` WHERE `itemID`='$txtarr[moonID]' LIMIT 1";
             $result = $db->query($query);
-            array_push($txtarr[moonName]=mysql_result($result, 0));
+            array_push($txtarr[moonName]=$db->fetchRow($result)[0]);
         }
         if($txtarr[solarSystemID]){
             $query = "SELECT `solarSystemName` FROM  `mapSolarSystems` WHERE `solarSystemID`='$txtarr[solarSystemID]' LIMIT 1";
             $result = $db->query($query);
-            array_push($txtarr[solarSystemName]=mysql_result($result, 0));
+            array_push($txtarr[solarSystemName]=$db->fetchRow($result)[0]);
         }
         if($txtarr[planetID]){
             $query = "SELECT `itemName` FROM  `mapDenormalize` WHERE `itemID`='$txtarr[planetID]' LIMIT 1";
             $result = $db->query($query);
-            array_push($txtarr[planetName]=mysql_result($result, 0));
+            array_push($txtarr[planetName]=$db->fetchRow($result)[0]);
         }
         return yaml_emit($txtarr);
     }

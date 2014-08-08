@@ -6,14 +6,12 @@ require_once dirname(__FILE__) . '/../init.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 $db->openConnection();
-if(!mysql_error()) {
-    
-    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
-} else logs::endlog($msg . mysql_error());
+$msg .= ($db->pingServer() === False) ? "[fail] Server is not responding!" : "[ok]";
 $query = "SELECT * FROM `apilist`";
 $result = $db->query($query);
 //Getting APIs from DB...
 $msg .= "\nCollecting API keys... ";
+if(gettype($result) != object) logs::endlog($msg . $result);
 $keyIDarr = array();
 $vCodearr = array();
 while($row = $db->fetchAssoc($result)){
@@ -56,7 +54,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
         $msg .= "\nSilo id " . $data[$i]['siloID'] . ". Checking for obsolete records... ";
         $query = "SELECT `siloID` FROM `silolist`";
         $result = $db->query($query);
-        if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());       
+        if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . $result);       
         $pageChar = "https://api.eveonline.com/account/apikeyinfo.xml.aspx";
         $apiChar = api::api_req($pageChar, $keyID, $vCode, '', '', '', '');
         $ownerID = strval($apiChar->result->key->rowset->row->attributes()->corporationID);
@@ -66,9 +64,9 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 if($j==count($data)){
                     //Deleting obsolete records, if found...
                     mysql_query("DELETE FROM `silolist` WHERE `siloID`='{$silolist[0]}' AND `ownerID` = '$ownerID'");  
-                    if(!mysql_error()){
+                    if(gettype($result) === object OR $result === TRUE){
                         if(mysql_affected_rows()!=0) $msg .= " Deleting obsolete records... [ok]";
-                    } else logs::endlog($msg . " Deleting obsolete records... " . mysql_error());     
+                    } else logs::endlog($msg . " Deleting obsolete records... " . $result);    
                 }
             }
         }
@@ -76,19 +74,20 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
         $msg .= "\nLooking for old records... ";
         $query = "SELECT `siloID` FROM `silolist` WHERE `siloID`='{$data[$i]['siloID']}' LIMIT 1";
         $result = $db->query($query);
-        if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+        if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . $result);
         $num = $db->countRows($result);
         //If found, updating...
         if ($num === 1) {
             $msg .= " Looking for moon mineral changed... ";
             $query = "SELECT `typeID` FROM `silolist` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
             $result = $db->query($query);
-            if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+            if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . $result);
             $num2 = $db->countRows($result);
             if ($num2 == 1){
                 $msg .= " Moon mineral didn't change, updating... ";
                 $query = "UPDATE `silolist` SET `quantity` = '{$data[$i]['quantity']}' WHERE `siloID`='{$data[$i]['siloID']}'";
                 $result = $db->query($query);
+                if(gettype($result) === object OR $result === TRUE) $msg .= " Successful updated"; else logs::endlog($msg . $result);
             }
             else
             {
@@ -96,16 +95,16 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 $msg .= " Getting Moon Mineral type... ";
                 $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
                 $result = $db->query($query);
-                if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . mysql_error());
-                $typeName = mysql_result($result, 0);
+                if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . $result);
+                $typeName = $db->fetchRow($result)[0];
                 $msg .= " Getting Moon Mineral volume... ";
                 $query = "SELECT `volume` FROM  `invTypes` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
                 $result = $db->query($query);
-                if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . mysql_error());
-                $mmvolume = mysql_result($result, 0);
+                if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . $result);
+                $mmvolume = $db->fetchRow($result)[0];
                 $query = "INSERT INTO `silolist` SET `itemID` = '{$data[$i]['itemID']}', `typeID` = '{$data[$i]['typeID']}', `quantity` = '{$data[$i]['quantity']}', `mmname` = '$typeName', `mmvolume` = '$mmvolume'";
                 $result = $db->query($query);
-                if(!mysql_error()) $msg .= " Successful created"; else logs::endlog($msg . mysql_error());
+                if(gettype($result) === object OR $result === TRUE) $msg .= " Successful created"; else logs::endlog($msg . $result);
             }
         if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
         } else {
@@ -114,37 +113,37 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
             $msg .= " Getting Moon Mineral type... ";
             $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
             $result = $db->query($query);
-            if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . mysql_error());
-            $typeName = mysql_result($result, 0);
+            if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . $result);
+            $typeName = $db->fetchRow($result)[0];
             $msg .= " Getting Moon Mineral volume... ";
             $query = "SELECT `volume` FROM  `invTypes` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
             $result = $db->query($query);
-            if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . mysql_error());
-            $mmvolume = mysql_result($result, 0);
+            if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . $result);
+            $mmvolume = $db->fetchRow($result)[0];
             $msg .= " Associate with pos... ";
             $query = "SELECT `posID` FROM  `poslist` WHERE `locationID`='{$data[$i]['locationID']}' LIMIT 1";
             $result = $db->query($query);
-            if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . mysql_error());
-            $posID = mysql_result($result, 0);
+            if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error:" . $result);
+            $posID = $db->fetchRow($result)[0];
             $query = "INSERT INTO `silolist` SET `locationID`= '{$data[$i]['locationID']}', `itemID` = '{$data[$i]['itemID']}', `siloID` = '{$data[$i]['siloID']}', `typeID` = '{$data[$i]['typeID']}', `quantity` = '{$data[$i]['quantity']}', `mmname` = '$typeName', `mmvolume` = '$mmvolume', `posID` = '$posID', `ownerID` = '$ownerID'";
             $result = $db->query($query);
-            if(!mysql_error()) $msg .= " Successful created"; else logs::endlog($msg . mysql_error());
+            if(gettype($result) === object OR $result === TRUE) $msg .= " Successful created"; else logs::endlog($msg . $result);
         };
     }
 }
 $msg .= "\nDeleting silos without POS";
 $query = "SELECT `posID` FROM `silolist`";
 $result = $db->query($query);
-if(mysql_error()) logs::endlog($msg . " Error 1:" . mysql_error());
+if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 1:" . $result);
 for ($i = 0; $i < $db->countRows($result); $i++){
-    $posID = mysql_result($result, $i);
+    $posID = $db->fetchRow($result)[$i];
     $query2 = "SELECT `posID` FROM `poslist` WHERE `posID`='$posID'";
-    $result2 = mysql_query($query2);
-    if(mysql_error()) logs::endlog($msg . " Error 2:" . mysql_error());
+    $result2 = $db->query($query);
+    iif(gettype($result2) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 2:" . $result2);
     if($db->countRows($result2)==0){
         $query3 = "DELETE FROM `silolist` WHERE `posID`='$posID'";
-        $result3 = mysql_query($query3);
-        if(mysql_error()) logs::endlog($msg . " Error 3:" . mysql_error());
+        $result3 = $db->query($query3);
+        if(gettype($result3) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 3:" . $result3);
     }
 }
 logs::endlog($msg);

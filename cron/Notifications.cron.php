@@ -7,14 +7,12 @@ include dirname(__FILE__) . '/../XMPPHP/XMPP.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 $db->openConnection();
-if(!mysql_error()) {
-    
-    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
-} else logs::endlog($msg . mysql_error());
+$msg .= ($db->pingServer() === False) ? "[fail] Server is not responding!" : "[ok]";
 $query = "SELECT * FROM `users`";
 $result = $db->query($query);
 //Getting APIs from DB...
 $msg .= "\nCollecting API keys... ";
+if(gettype($result) != object) logs::endlog($msg . $result);
 $users = array();
 $deld = array();
 while($row = $db->fetchAssoc($result)){
@@ -87,15 +85,15 @@ for($k = 0; $k < count($data); $k++){
 	$msg .= "\nNotifications id " . $data[$k]['notificationID'] . "... ";
 	$query = "SELECT `notificationID` FROM `notifications` WHERE `notificationID`='{$data[$k]['notificationID']}' LIMIT 1";
     $result = $db->query($query);
-    if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+    if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . $result);
     $num = $db->countRows($result);
     if($num === 0){
     	$msg .= " Inserting new notification... ";
-        $notixtxttosql = ($data[$k]['typeID']==76) ? addslashes(ParsingNotifText($data[$k]['NotificationText'], 0, 0)) : addslashes(ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
+        $notixtxttosql = ($data[$k]['typeID']==76) ? addslashes(notifications::ParsingNotifText($data[$k]['NotificationText'], 0, 0)) : addslashes(notifications::ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
     	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
     	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
     	$result = $db->query($query);
-    	if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
+    	if(gettype($result) === object OR $result === TRUE) $msg .= "[ok]"; else logs::endlog($msg . $result);
     } else $msg .= " Notification already exists.";
 }
 $msg .= "\nSending e-mails and jabber message with new notifications";
@@ -106,26 +104,27 @@ for ($k = 0; $k < count($users); $k++){
         $query = ($users[$k][groupID] == 1) ? "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}' AND `corporationID` = '{$users[$k][corporationID]}'" :
          "SELECT `notificationID`, `typeID`, `sentDate`, `NotificationText` FROM `notifications` WHERE `notificationID` > '{$users[$k][lastNotifID]}'";
         $result = $db->query($query);
-        //$msg .= " || " . $db->countRows($result) . " || ";
+        $notifArr = $db->toArray($result);
+        if(gettype($result) != object) logs::endlog($msg . "\n" . $result);
         for ($j = 0; $j < $db->countRows($result); $j++){
-            //$msg .= " :: " . mysql_result($result, $j, 0) . " :: ";
-            if(mysql_result($result, $j, 1)==76){
-                $tmparr = yaml_parse(mysql_result($result, $j, 3));
+            if($notifArr[$j][typeID]==76){
+                $tmparr = yaml_parse($notifArr[$j][NotificationText]);
                 for($h=0; $h < count($tmparr[wants]); $h++){
                     if($tmparr[wants][$h][typeID] = 4246 || $tmparr[wants][$h][typeID] = 4247 || $tmparr[wants][$h][typeID] = 4051 || $tmparr[wants][$h][typeID] = 4312){ // Fuel Block ids
                         $query2 = "SELECT `fuelph` FROM `poslist` WHERE `typeID` = '{$tmparr[typeID]}' LIMIT 1";
-                        $result2 = mysql_query($query2);
-                        if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*23 && $tmparr[wants][$h][quantity] < mysql_result($result2, 0)*24)
-                            $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
-                        if($tmparr[wants][$h][quantity] >= mysql_result($result2, 0)*3 && $tmparr[wants][$h][quantity] < mysql_result($result2, 0)*4)
-                            $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
+                        $result2 =  $db->query($query2);
+                        $fuelph = $db->fetchRow($result2)[0];
+                        if(gettype($result2) != object) logs::endlog($msg . "\n" . $result2);
+                        if($tmparr[wants][$h][quantity] >= $fuelph*23 && $tmparr[wants][$h][quantity] < $fuelph*24)
+                            $mailtext .= notifications::GenerateMailText($notifArr[$j][typeID], $notifArr[$j][sentDate], $notifArr[$j][NotificationText]);
+                        if($tmparr[wants][$h][quantity] >= $fuelph*3 && $tmparr[wants][$h][quantity] < $fuelph*4)
+                            $mailtext .= notifications::GenerateMailText($notifArr[$j][typeID], $notifArr[$j][sentDate], $notifArr[$j][NotificationText]);
                     }
                 }
-            } else $mailtext .= GenerateMailText(mysql_result($result, $j, 1), mysql_result($result, $j, 2), mysql_result($result, $j, 3));
+            } else $mailtext .= notifications::GenerateMailText($notifArr[$j][typeID], $notifArr[$j][sentDate], $notifArr[$j][NotificationText]);
         }
         if($mailtext != NULL){
-            //$msg .= "--------------------\n" var_dump($users[$k]) . "~~~~~~~~~~~~~~~~~~~~\n" . $mailtext . "--------------------\n";
-            if($users[$k][mailNotif] & 1) $msg .= (sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [mail ok]" : " [mail fail]";
+            if($users[$k][mailNotif] & 1) $msg .= (notifications::sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [mail ok]" : " [mail fail]";
             if($users[$k][mailNotif] & 2) {
                 $conn = new XMPPHP_XMPP('redalliance.pw', 5222, 'RABot', 'wP5K5p8E', 'xmpphp', 'redalliance.pw', $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
                 try {
@@ -144,6 +143,7 @@ for ($k = 0; $k < count($users); $k++){
             if($lastnotif > 0){
                 $query = "UPDATE `users` SET `lastNotifID` = '{$lastnotif}' WHERE `keyID`='{$users[$k]['keyID']}'";
                 $result = $db->query($query);
+                if(gettype($result) === object OR $result === TRUE) $msg .= " [last notif id updated]"; else logs::endlog($msg . "\n" . $result);
             }
         } else $msg .= " no new notifications";
     } else  $msg .= " doesn't wish or have permission to receive e-mails";
