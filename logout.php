@@ -16,5 +16,5 @@ session_start();
 ?>
 <script type="text/javascript">
 var delay = 500;
-  setTimeout("document.location.href='/pos'", delay);
+  setTimeout("document.location.href='/index.php'", delay);
 </script>

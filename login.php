@@ -42,7 +42,7 @@
                        <div class="alert alert-success" role="alert">You logged in. You will be redirected shortly.</div>
                         <script type="text/javascript">
                             var delay = 5000;
-                            setTimeout("document.location.href='/pos'", delay);
+                            setTimeout("document.location.href='/index.php'", delay);
                         </script>
 _END;
                     } else {

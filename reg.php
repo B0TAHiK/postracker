@@ -102,7 +102,7 @@ _END;
                             <div class="error">Successfully registered!<br>You will be redirected shortly.</div>
                             <script type="text/javascript">
                                 var delay = 500;
-                                setTimeout("document.location.href='/pos'", delay);
+                                setTimeout("document.location.href='/index.php'", delay);
                             </script>
 _END;
                             $subj = "Welcome to Red Alliance POS Monitor, $char";
