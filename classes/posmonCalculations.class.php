@@ -33,7 +33,7 @@ class posmonCalculations {
         $api = api::api_req($page, "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
         $posTypeRow = $db->fetchRow($result);
-        $posTypeID = $posTypeRow[0];
+        $posTypeID = $posTypeRow[1];
         $rfTime = $stront / (($allyownerID != $systemownerID[0][0]) ? $posTypeID : $posTypeID*0.75);
         return floor($rfTime);
     }

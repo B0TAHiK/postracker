@@ -46,7 +46,6 @@ If ($loggedIN === 1){
         $ownerName = $data[0][ownerName];
         $toTemplate['data'][$corpCounter]['corpName'] = $ownerName;
         $posCounter = 0; //2-st layer counter for $toTamplate[data][$corpCounter] array
-        $i=0;
         //Parsing each POS...
         foreach ($data as $table):
             $time = posmonCalculations::hoursToDays($table[time]);
@@ -105,35 +104,24 @@ If ($loggedIN === 1){
                     $j++;
                 }
             }
-            if ($table[time] < 48 || $table[state] == 3) {
-                $alert = "id='alert'";
-            } else {
-                $alert = "";
-            }
             switch ($table[state]) {
                 case "4":
                     $state = "Online";
-                    $inRF = "";
                     break;
                 case "3":
                     $state = "<b>Reinforced!</b>";
-                    $inRF = "id='alert'";
                     break;
                 case "2":
                     $state = "Onlining";
-                    $inRF = "";
                     break;
                 case "1":
                     $state = "Anchored / Offline";
-                    $inRF = "";
                     break;
                 case "0":
                     $state = "Unanchored";
-                    $inRF = "";
                     break;
                 default:
                     $state = "N/A";
-                    $inRF = "";
                     break;
             }
             $toTemplate['data'][$corpCounter][$posCounter]['locationName'] = $locationName[0];
@@ -142,27 +130,36 @@ If ($loggedIN === 1){
             $toTemplate['data'][$corpCounter][$posCounter]['time'] = $time;
             $toTemplate['data'][$corpCounter][$posCounter]['stateID'] = $table[state];
             $toTemplate['data'][$corpCounter][$posCounter]['moonName'] = $table[moonName];
+            if ($table[time] < 48 && $table[state] > 3) {
+                $toTemplate['data'][$corpCounter][$posCounter]['status'] = 'class=warning';
+            }
             if ($table[state] == 3) {
                 $toTemplate['data'][$corpCounter][$posCounter]['stateTimestamp'] = $table[stateTimestamp];
+                $toTemplate['data'][$corpCounter][$posCounter]['status'] = 'class=danger';
             } else {
                 $toTemplate['data'][$corpCounter][$posCounter]['rftime'] = $rftime;
             }
             $toTemplate['data'][$corpCounter][$posCounter]['numSilo'] = $numSilo;
             if ($numSilo > 0) {
                 $siloCounter = 0; //3-rd layer Silo Counter for $toTamplate[data][$corpCounter][$posCounter] array
+                $i=0;
                 foreach ($siloInfo as $silos) {
                     if ($siloInfo[$j][percent] > 0.8) {
-                        //alert
+                        $i++;
                     } else {
                         //noalert
                     }
                     $toTemplate['data'][$corpCounter][$posCounter][$siloCounter]['mmname'] = $silos[mmname];
-                    $toTemplate['data'][$corpCounter][$posCounter][$siloCounter]['quantity'] = $silos[quantity];
-                    $toTemplate['data'][$corpCounter][$posCounter][$siloCounter]['maximum'] = $silos[maximum];
+                    $toTemplate['data'][$corpCounter][$posCounter][$siloCounter]['quantity'] = floor($silos[quantity]);
+                    $toTemplate['data'][$corpCounter][$posCounter][$siloCounter]['maximum'] = floor($silos[maximum]);
                     $siloCounter++;
                 }
+                if ($i > 0) {
+                    $toTemplate['data'][$corpCounter][$posCounter]['popoverType'] = 'warning';
+                } else {
+                    $toTemplate['data'][$corpCounter][$posCounter]['popoverType'] = 'info';
+                }
             }
-            $i++;
             $posCounter++;
             unset($siloInfo);
         endforeach;

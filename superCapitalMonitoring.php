@@ -33,9 +33,6 @@ If ($loggedIN = 1 && $_SESSION[groupID] > 1){
             $data[] = $superCapList;
             $i++;
         }
-//        if ($i < 1) {
-//            continue;
-//        }
         $toTemplate['data'][$corpCounter]['corpName'] = $data[0][corporationName];
         $i = 0;
         $superCounter = 0; //2-st layer counter for $toTamplate[data][$corpCounter] array
@@ -49,15 +46,6 @@ If ($loggedIN = 1 && $_SESSION[groupID] > 1){
             $toTemplate['data'][$corpCounter][$superCounter]['SS'] = $table[SS];
             $toTemplate['data'][$corpCounter][$superCounter]['logonDateTime'] = $table[logonDateTime];
             $toTemplate['data'][$corpCounter][$superCounter]['logoffDateTime'] = $table[logoffDateTime];
-//            echo "<td>$table[characterName]</td>";
-//            echo "<td>$table[shipTypeName]</td>";
-//            echo "<td>$table[shipClass]</td>";
-//            echo "<td>$table[locationName]</td>";
-//            echo "<td>$table[regionName]</td>";
-//            echo "<td>$table[SS]</td>";
-//            echo "<td>$table[logonDateTime]</td>";
-//            echo "<td>$table[logoffDateTime]</td>";
-            $i++;
             $superCounter++;
         endforeach;
         $corpCounter++;

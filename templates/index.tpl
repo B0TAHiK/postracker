@@ -39,16 +39,16 @@
                 <thead><tr>
                     <th width="10%">System</th>
                     <th width="20%">Type</th>
-                    <th width="15%">Moon</th>
-                    <th width="10%">State</th>
-                    <th width="15%">Fuel left</th>
-                    <th width="15%"><span data-toggle="tooltip" data-original-title="Reinforce timer">Stront time left</span></th>
+                    <th width="20%">Moon</th>
+                    <th width="15%">State</th>
+                    <th width="10%">Fuel left</th>
+                    <th width="10%"><span data-toggle="tooltip" data-original-title="Reinforce timer">Stront time left</span></th>
                     <th width="15%">Silo information</th>
                 </tr></thead>
                 <tbody>
                     {% for table in corp %}
                     {% if table is iterable %}
-                        <tr>
+                        <tr {{table.status}}>
                             <td>{{table.locationName }}</td>
                             <td>{{table.typeName}}</td>
                             <td>{{table.moonName}}</td>
@@ -63,7 +63,7 @@
                             </td>
                             <td>
                                 {% if table.numSilo > 1 %}
-                                <a class="btn btn-info" data-toggle="popover" title="Silos" data-content="
+                                <a class="btn btn-{{table.popoverType}}" data-toggle="popover" title="Silos" data-content="
                                         {% for silo in table %}
                                         {% if silo.mmname is defined %}
                                         <b>{{silo.mmname}}</b>:<br>
