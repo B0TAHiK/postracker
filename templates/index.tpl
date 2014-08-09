@@ -4,6 +4,7 @@
 
 {% block pageName %}POS Monitor{% endblock %}
 {% block switchButton %}
+ {% if loggedIN > 0 %}
 <style> .switch {
         margin-top: -30px;
     }
@@ -12,6 +13,7 @@
     <form action='index.php' method='post' align='right' class='switch'><button type=submit class="btn btn-default switch">Hide Anchored POSes</button></form>
 {% else %}
     <form action='index.php' method='post' align='right' class='switch'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default switch">Show Anchored POSes</button></form></form>
+{% endif %}
 {% endif %}
 {% endblock %}
 

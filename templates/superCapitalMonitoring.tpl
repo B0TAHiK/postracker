@@ -4,6 +4,7 @@
 
 {% block pageName %}Supercapital Monitoring{% endblock %}
 {% block switchButton %}
+ {% if loggedIN > 0 %}
 <style> .switch {
         margin-top: -30px;
     }
@@ -13,6 +14,7 @@
 {% else %}
     <form action='superCapitalMonitoring.php' method='post' align='right' class='switch'><button type=submit name='showOld' value='old' class="btn btn-default switch">Show old faggots</button></form>
     
+{% endif %}
 {% endif %}
 {% endblock %}
 
