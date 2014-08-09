@@ -72,4 +72,3 @@ $twig = new Twig_Environment($loader, array(
 ));
 $template = $twig->loadTemplate($scriptName[0] . '.tpl');
 echo $template->render($toTemplate);
-print_r($toTemplate);
