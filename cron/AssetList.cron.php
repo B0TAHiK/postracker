@@ -63,9 +63,10 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 if($data[$j]['siloID']==$silolist[0]) break;
                 if($j==count($data)){
                     //Deleting obsolete records, if found...
-                    mysql_query("DELETE FROM `silolist` WHERE `siloID`='{$silolist[0]}' AND `ownerID` = '$ownerID'");  
+                    $query = "DELETE FROM `silolist` WHERE `siloID`='{$silolist[0]}' AND `ownerID` = '$ownerID'";
+                    $result = $db->query($query);
                     if(gettype($result) === object OR $result === TRUE){
-                        if(mysql_affected_rows()!=0) $msg .= " Deleting obsolete records... [ok]";
+                        if($db->affectedRows($result)!=0) $msg .= " Deleting obsolete records... [ok]";
                     } else logs::endlog($msg . " Deleting obsolete records... " . $result);    
                 }
             }
@@ -106,7 +107,6 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 $result = $db->query($query);
                 if(gettype($result) === object OR $result === TRUE) $msg .= " Successful created"; else logs::endlog($msg . $result);
             }
-        if(!mysql_error()) $msg .= "[ok]"; else logs::endlog($msg . mysql_error());
         } else {
         //If not, creating new row...
             $msg .= " Not found old record, creating new... ";
@@ -134,12 +134,12 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
 $msg .= "\nDeleting silos without POS";
 $query = "SELECT `posID` FROM `silolist`";
 $result = $db->query($query);
-if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 1:" . $result);
+if(gettype($result) != object) logs::endlog($msg . "Error 1:" . $result);
 for ($i = 0; $i < $db->countRows($result); $i++){
     $posID = $db->fetchRow($result)[$i];
     $query2 = "SELECT `posID` FROM `poslist` WHERE `posID`='$posID'";
     $result2 = $db->query($query);
-    if(gettype($result2) === object) $msg .= "[ok]"; else logs::endlog($msg . "Error 2:" . $result2);
+    if(gettype($result2) != object) logs::endlog($msg . "Error 2:" . $result2);
     if($db->countRows($result2)==0){
         $query3 = "DELETE FROM `silolist` WHERE `posID`='$posID'";
         $result3 = $db->query($query3);
