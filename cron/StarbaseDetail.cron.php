@@ -89,7 +89,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 $msg .= " Calculating Estimated time.";
                 $data[$i]['fuel'] = $data[$i][posFuelQuantity];
                 $fuel = $data[$i][fuel];
-                $fuelph = posmonCalculations::calc_fuel_time($type, $systemID, $allyownerID, $msg);
+                $fuelph = posmonCalculations::calc_fuel_time($type,$data[$i][posFuelID], $systemID, $allyownerID, $msg);
                 $time = floor($fuel / $fuelph);
                 //Adding information to the DB...
                 $msg .= " Adding information to the DB... ";

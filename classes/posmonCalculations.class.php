@@ -5,12 +5,12 @@
  * @author Григорий
  */
 class posmonCalculations {
-    public function calc_fuel_time($typeID, $systemID, $allyownerID, $msg) {
+    public function calc_fuel_time($typeID, $posFuelID, $systemID, $allyownerID, $msg) {
         include dirname(__FILE__) . '/../db_con.php';
         $config = new config($hostname, $username, $password, $database);
         $db = db::getInstance($config);
         $db->openConnection();
-        $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
+        $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID' AND `resourceTypeID` = '$posFuelID'";
         $result = $db->query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
         $row = $db->fetchAssoc($result);
@@ -27,13 +27,13 @@ class posmonCalculations {
         $config = new config($hostname, $username, $password, $database);
         $db = db::getInstance($config);
         $db->openConnection();
-        $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID'";
+        $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID' AND `resourceTypeID` = '16275'";
         $result = $db->query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
         $api = api::api_req($page, "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
         $posTypeRow = $db->fetchRow($result);
-        $posTypeID = $posTypeRow[1];
+        $posTypeID = $posTypeRow[0];
         $rfTime = $stront / (($allyownerID != $systemownerID[0][0]) ? $posTypeID : $posTypeID*0.75);
         return floor($rfTime);
     }
