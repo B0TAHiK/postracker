@@ -13,7 +13,7 @@ class posmonCalculations {
         $query = "SELECT `quantity` FROM `invControlTowerResources` WHERE  `controlTowerTypeID` = '$typeID' AND `resourceTypeID` = '$posFuelID'";
         $result = $db->query($query);
         $page = "https://api.eveonline.com/map/Sovereignty.xml.aspx";
-        $row = $db->fetchAssoc($result);
+        //$row = $db->fetchAssoc($result);
         $api = api::api_req($page, "", "");
         $systemownerID = $api->xpath("/eveapi/result/rowset/row[@solarSystemID=$systemID]/@allianceID");
         $posTypeRow = $db->fetchRow($result);

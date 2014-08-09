@@ -87,7 +87,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
                 if(gettype($result) === object) $msg .= "[ok]"; else logs::endlog($msg . $result);
                 //Calculating Estimated time...
                 $msg .= " Calculating Estimated time.";
-                $data[$i]['fuel'] = $data[$i][posFuelQuantity];
+                $data[$i][fuel] = $data[$i][posFuelQuantity];
                 $fuel = $data[$i][fuel];
                 $fuelph = posmonCalculations::calc_fuel_time($type,$data[$i][posFuelID], $systemID, $allyownerID, $msg);
                 $time = floor($fuel / $fuelph);
