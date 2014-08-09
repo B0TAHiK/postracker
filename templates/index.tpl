@@ -3,6 +3,17 @@
 {% block title %}Index{% endblock %}
 
 {% block pageName %}POS Monitor{% endblock %}
+{% block switchButton %}
+<style> .switch {
+        margin-top: -30px;
+    }
+</style>
+{% if showAnchored == 'old' %}
+    <form action='index.php' method='post' align='right' class='switch'><button type=submit class="btn btn-default switch">Hide Anchored POSes</button></form>
+{% else %}
+    <form action='index.php' method='post' align='right' class='switch'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default switch">Show Anchored POSes</button></form></form>
+{% endif %}
+{% endblock %}
 
 {% block content %}
     {% if loggedIN > 0 %}
@@ -12,15 +23,11 @@
             placement : 'top',
             html : 'true'
         });
+        $(".table span").tooltip({
+            placement : 'top'
+        });
     });
     </script>
-
-    {% if showAnchored == 'old' %}
-        <form action='index.php' method='post' align='right'><button type=submit class="btn btn-default">Hide Anchored POSes</button></form>
-    {% else %}
-        <form action='index.php' method='post' align='right'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default">Show Anchored POSes</button></form></form>
-    {% endif %}
-    <hr>
     {% for corp in data %}
         <div class="panel panel-default">
             <!-- Default panel contents -->
@@ -30,12 +37,12 @@
              <!-- Table -->
             <table class="table table-striped table-bordered table-hover">
                 <thead><tr>
-                    <th width="10%">System:</th>
-                    <th width="20%">Type:</th>
-                    <th width="15%">Moon:</th>
-                    <th width="10%">State:</th>
-                    <th width="15%">Fuel left<br>(Days and hours):</th>
-                    <th width="15%">Stront time left<br>(reinforce timer):</th>
+                    <th width="10%">System</th>
+                    <th width="20%">Type</th>
+                    <th width="15%">Moon</th>
+                    <th width="10%">State</th>
+                    <th width="15%">Fuel left</th>
+                    <th width="15%"><span data-toggle="tooltip" data-original-title="Reinforce timer">Stront time left</span></th>
                     <th width="15%">Silo information</th>
                 </tr></thead>
                 <tbody>

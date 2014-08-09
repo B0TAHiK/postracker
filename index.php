@@ -99,7 +99,9 @@ If ($loggedIN === 1){
                     $siloInfo[$j][mmname] = "$siloContents[mmname]";
                     $SiloFraction = Round(($siloInfo[$j][mmVol] / $siloMax), 2);
                     $siloInfo[$j][percent] = $SiloFraction;
-                    $siloInfo[$j][maximum] = $siloMax / $siloContents[mmvolume];
+                    if ($siloContents[mmvolume] <> 0) {
+                        $siloInfo[$j][maximum] = $siloMax / $siloContents[mmvolume];
+                        };
                     $j++;
                 }
             }

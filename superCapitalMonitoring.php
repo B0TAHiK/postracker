@@ -1,99 +1,75 @@
 <?php
-    $thisPage="supers";
-    require_once 'autorize.php';
-?>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/navigation.css">
-        <title>Supercapital Monitoring</title>
-    </head>
-    <body>
-        <div id="wrapper">
-            <?php include 'header.php'; ?>
-            <div id="topic"><span id="topic">supercapital monitoring</span></div>
-            <div id="mainbody">
-                <?php
-                    If ($loggedIN = 1 && $_SESSION[groupID] > 1){
-                        //Requiring some libs...
-                        require_once 'db_con.php';
-                        require_once 'init.php';
-                        $db->openConnection();
-                        
-                        //Getting corps...
-                        $query = "SELECT `corporationName` FROM `superCapitalList`";
-                        $result = $db->query($query);
-                        $owners = array();
-                        while ($ownerlist = $db->fetchRow($result)) {
-                            $owners[] = $ownerlist[0]; 
-                        }
-                        if (!isset($_POST[old])) {
-                            echo "<form action='superCapitalMonitoring.php' method='post' align='right'><input type=hidden name='old' value='old'><input type=submit value='Show old faggots' /></form>";
-                        } else {
-                            echo "<form action='superCapitalMonitoring.php' method='post' align='right'><input type=submit value='Hide old faggots' /></form>";
-                        }
-                        $onwersCut = array_unique($owners);
-                        foreach ($onwersCut as $owner):
-                            if (!isset($_POST[old])) {
-                                $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 3 MONTH)";
-                            } else {
-                                $MoreQuery = "";
-                            }
-                            $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner' $MoreQuery";
-                            $result = $db->query($query);
-                            $data = array();
-                            $i = 0;
-                            while ($superCapList = $db->fetchAssoc($result)) {
-                                $data[] = $superCapList;
-                                $i++;
-                            }
-                            if ($i < 1) {
-                                continue;
-                            }
-                            $corporationName = $data[0][corporationName];
-                            echo "Owner: <b>$corporationName</b>";
-                            echo "<table id='pos'>";
-                            echo<<<_END
-                            <tr id="title">
-                                <td width = 10%>Pilot:</td>
-                                <td width = 10%>Ship:</td>
-                                <td width = 15%>Class:</td>
-                                <td width = 10%>System:</td>
-                                <td width = 10%>Region:</td>
-                                <td width = 5%>SS:</td>
-                                <td width = 20%>Last Login:</td>
-                                <td width = 20%>Last Logout:</td>
-                            </tr>
-_END;
-                            $i = 0;
-                            //Parsing each super...
-                            foreach ($data as $table):
-                                    if (!($i % 2)){
-                                    $isColored = "id=colored";
-                                } else {
-                                    $isColored = "";
-                                }
-                                echo "<tr $isColored>";
-                                echo "<td>$table[characterName]</td>";
-                                echo "<td>$table[shipTypeName]</td>";
-                                echo "<td>$table[shipClass]</td>";
-                                echo "<td>$table[locationName]</td>";
-                                echo "<td>$table[regionName]</td>";
-                                echo "<td>$table[SS]</td>";
-                                echo "<td>$table[logonDateTime]</td>";
-                                echo "<td>$table[logoffDateTime]</td>";
-                            $i++;
-                            endforeach;
-                            echo "</table>";
-                        endforeach;
-                    } else {
-                        echo "<div class='error'>Access denied. Autorization required.</div>";
-                    }
-                ?>
-            </div>
-        </div>
-        <?php include "bottom.php"; ?>
-    </body>
-</html>
+$thisPage="supers";
+require_once 'autorize.php';
+require_once 'init.php';
+include 'header.php';
+If ($loggedIN = 1 && $_SESSION[groupID] > 1){
+    //Requiring some libs...
+    require_once 'db_con.php';
+    $db->openConnection();
+    //Getting corps...
+    $query = "SELECT `corporationName` FROM `superCapitalList`";
+    $result = $db->query($query);
+    $owners = array();
+    while ($ownerlist = $db->fetchRow($result)) {
+        $owners[] = $ownerlist[0]; 
+    }
+    
+    $toTemplate['showOld'] = $_POST[showOld];
+    $corpCounter = 0; //1-st layer counter for $toTamplate[data] array
+    
+    $onwersCut = array_unique($owners);
+    foreach ($onwersCut as $owner):
+        if (!isset($_POST[showOld])) {
+            $MoreQuery = "AND `logoffDateTime` > DATE_SUB( NOW( ) , INTERVAL 3 MONTH)";
+        } else {
+            $MoreQuery = "";
+        }
+        $query = "SELECT * FROM `superCapitalList` WHERE `corporationName` = '$owner' $MoreQuery";
+        $result = $db->query($query);
+        $data = array();
+        $i = 0;
+        while ($superCapList = $db->fetchAssoc($result)) {
+            $data[] = $superCapList;
+            $i++;
+        }
+//        if ($i < 1) {
+//            continue;
+//        }
+        $toTemplate['data'][$corpCounter]['corpName'] = $data[0][corporationName];
+        $i = 0;
+        $superCounter = 0; //2-st layer counter for $toTamplate[data][$corpCounter] array
+        //Parsing each super...
+        foreach ($data as $table):
+            $toTemplate['data'][$corpCounter][$superCounter]['characterName'] = $table[characterName];
+            $toTemplate['data'][$corpCounter][$superCounter]['shipTypeName'] = $table[shipTypeName];
+            $toTemplate['data'][$corpCounter][$superCounter]['shipClass'] = $table[shipClass];
+            $toTemplate['data'][$corpCounter][$superCounter]['locationName'] = $table[locationName];
+            $toTemplate['data'][$corpCounter][$superCounter]['regionName'] = $table[regionName];
+            $toTemplate['data'][$corpCounter][$superCounter]['SS'] = $table[SS];
+            $toTemplate['data'][$corpCounter][$superCounter]['logonDateTime'] = $table[logonDateTime];
+            $toTemplate['data'][$corpCounter][$superCounter]['logoffDateTime'] = $table[logoffDateTime];
+//            echo "<td>$table[characterName]</td>";
+//            echo "<td>$table[shipTypeName]</td>";
+//            echo "<td>$table[shipClass]</td>";
+//            echo "<td>$table[locationName]</td>";
+//            echo "<td>$table[regionName]</td>";
+//            echo "<td>$table[SS]</td>";
+//            echo "<td>$table[logonDateTime]</td>";
+//            echo "<td>$table[logoffDateTime]</td>";
+            $i++;
+            $superCounter++;
+        endforeach;
+        $corpCounter++;
+    endforeach;
+} else {
+//    GO AWAY
+}
+$scriptName = explode(".", basename(__FILE__));
+$loader = new Twig_Loader_Filesystem(dirname(__FILE__) . '/templates');
+$twig = new Twig_Environment($loader, array(
+    'cache' => dirname(__FILE__) . '/cache',
+));
+$template = $twig->loadTemplate($scriptName[0] . '.tpl');
+echo $template->render($toTemplate);
+print_r($toTemplate);
