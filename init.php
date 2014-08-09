@@ -1,4 +1,5 @@
 <?php
+
 spl_autoload_register("autoload");
 
 function autoload($class_name)
@@ -12,6 +13,7 @@ function autoload($class_name)
     }
 }
 
-
-require_once '/Twig/Autoloader.php';
+require_once dirname(__FILE__) . '/Twig/Autoloader.php';
 Twig_Autoloader::register();
+
+?>
