@@ -35,8 +35,8 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
     $i=0;
     //Parsing XML...
     $msg .= "\nParsing silo ids for key " . $keyID;
-    foreach ( $api->result->rowset->row as $row):
-        if(strval($row[typeID]) == 14343 && strval($row[flag]) == 0){ //silo
+    foreach ($api->result->rowset->row as $row):
+        if(strval($row[typeID]) == 14343 && strval($row[flag]) == 0 && $row->rowset->row[typeID] != 0){ //silo
             $msg .= ", " . strval($row[itemID]);
             $data[$i] = array(
                 'siloID' => strval($row[itemID]),
@@ -92,7 +92,7 @@ for ($k = 0; $k < count($keyIDarr); $k++) {
             }
             else
             {
-                $msg .= " Moon mineral hanged, updating... ";
+                $msg .= " Moon mineral changed, updating... ";
                 $msg .= " Getting Moon Mineral type... ";
                 $query = "SELECT `typeName` FROM  `invTypes` WHERE `typeID`='{$data[$i]['typeID']}' LIMIT 1";
                 $result = $db->query($query);

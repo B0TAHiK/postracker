@@ -1,6 +1,6 @@
 <?php
 
-
+//require_once dirname(__FILE__) . '/../db_con.php';
 class db {
     private $connection;
     private $selectdb;
@@ -21,6 +21,7 @@ class db {
     function __destruct() {
         
     }
+
     public function openConnection() {
         try {
             $this->connection = mysqli_connect($this->config->hostname, $this->config->username, $this->config->password);
@@ -32,6 +33,7 @@ class db {
             return $e->getMessage();
         }
     }
+
     public function closeConnection() {
         try {
             mysqli_close($this->connection);
@@ -39,6 +41,7 @@ class db {
             return $e;
         }
     }
+
     public function query($query) {
         try {
             if(empty($this->connection)) {
@@ -208,7 +211,7 @@ class db {
     }
 
     public function sanitizeMySQL($var) {
-        $var = $this->sanitizeString($var);
+        //$var = $this->sanitizeString($var);
         return $var;
     }
 }

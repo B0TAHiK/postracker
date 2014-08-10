@@ -1,11 +1,14 @@
 <?php
 
+//require_once dirname(__FILE__) . '/../init.php';
 require_once dirname(__FILE__) . '/../db_con.php';
+include dirname(__FILE__) . '/../XMPPHP/XMPP.php';
 
 class notifications {
+
     public function ParsingNotifText($text, $OwnerCorporationID, $OwnerAllianceID){
         $txtarr = yaml_parse($text);
-        $db = db::getInstance();
+        //$db = db::getInstance();
         $db->openConnection();
         if(!mysql_error()) 
         if($OwnerCorporationID > 0){
@@ -113,5 +116,25 @@ class notifications {
         $headers .= "From: POS tracker notification services <mailer@buaco.ru>\r\n";
         $headers .= "Reply-to: No-Reply <no_reply@buaco.ru>\r\n";
         return mail($email, $subject, $text, $headers);
+    }
+    public function sendjabber($JID, $text){
+        $jhost = "redalliance.pw";
+        $jport = "5222";
+        $juser = "RABot";
+        $jpwd = "wP5K5p8E";
+        $jdomain = "redalliance.pw";
+        
+        $conn = new XMPPHP_XMPP($jhost, $jport, $juser, $jpwd, 'xmpphp', $jdomain, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
+        try {
+            $conn->connect();
+            $conn->processUntil('session_start');
+            $conn->presence();
+            $conn->message($JID, $text);
+            $conn->disconnect();
+            $msg = " [jabber ok]";
+        } catch(XMPPHP_Exception $e) {
+            $msg = " [jabber fail] " . $e->getMessage();
+        }
+        return $msg;
     }
 }

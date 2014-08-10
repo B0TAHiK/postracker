@@ -3,7 +3,6 @@
 //Requiring some libs...
 require_once dirname(__FILE__) . '/../db_con.php';
 require_once dirname(__FILE__) . '/../init.php';
-include dirname(__FILE__) . '/../XMPPHP/XMPP.php';
 //Connecting to DB...
 $msg = "Connecting to DB... ";
 $db->openConnection();
@@ -89,6 +88,7 @@ for($k = 0; $k < count($data); $k++){
     $num = $db->countRows($result);
     if($num === 0){
     	$msg .= " Inserting new notification... ";
+        //echo addslashes(notifications::ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
         $notixtxttosql = ($data[$k]['typeID']==76) ? addslashes(notifications::ParsingNotifText($data[$k]['NotificationText'], 0, 0)) : addslashes(notifications::ParsingNotifText($data[$k]['NotificationText'], $data[$k]['corporationID'], $data[$k]['allianceID']));
     	$query = "INSERT INTO `notifications` SET `notificationID` = '{$data[$k]['notificationID']}', `typeID` = '{$data[$k]['typeID']}', `senderID` = '{$data[$k]['senderID']}', `senderName` = '{$data[$k]['senderName']}',
     	 `sentDate` = '{$data[$k]['sentDate']}', `NotificationText` = '$notixtxttosql', `corporationID` = '{$data[$k]['corporationID']}', `allianceID` = '{$data[$k]['allianceID']}'";
@@ -125,19 +125,7 @@ for ($k = 0; $k < count($users); $k++){
         }
         if($mailtext != NULL){
             if($users[$k][mailNotif] & 1) $msg .= (notifications::sendmail($users[$k][email], "New EvE Online notification update", date(DATE_RFC822) . " New notifications arrived.\n" . $mailtext)) ? " [mail ok]" : " [mail fail]";
-            if($users[$k][mailNotif] & 2) {
-                $conn = new XMPPHP_XMPP('redalliance.pw', 5222, 'RABot', 'wP5K5p8E', 'xmpphp', 'redalliance.pw', $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
-                try {
-                    $conn->connect();
-                    $conn->processUntil('session_start');
-                    $conn->presence();
-                    $conn->message($users[$k][JID], $mailtext);
-                    $conn->disconnect();
-                    $msg .= " [jabber ok]";
-                } catch(XMPPHP_Exception $e) {
-                    $msg .= " [jabber fail] " . $e->getMessage();
-                }
-            }
+            if($users[$k][mailNotif] & 2) $msg .= notifications::sendjabber($users[$k][JID], $mailtext);
             $lastnotif = 0;
             for($j = 0; $j < count($data); $j++) if($data[$j]['notificationID'] > $users[$k]['lastNotifID'] && $lastnotif < $data[$j]['notificationID']) $lastnotif = $data[$j]['notificationID'];
             if($lastnotif > 0){
