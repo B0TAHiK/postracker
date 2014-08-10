@@ -7,12 +7,13 @@
  {% if loggedIN > 0 %}
 <style> .switch {
         margin-top: -30px;
+        float: right;
     }
 </style>
 {% if showAnchored == 'old' %}
-    <form action='index.php' method='post' align='right' class='switch'><button type=submit class="btn btn-default switch">Hide Anchored POSes</button></form>
+    <form action='index.php' method='post' align='right' class='switch'><button type=submit class="btn btn-default">Hide Anchored POSes</button></form>
 {% else %}
-    <form action='index.php' method='post' align='right' class='switch'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default switch">Show Anchored POSes</button></form></form>
+    <form action='index.php' method='post' align='right' class='switch'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default">Show Anchored POSes</button></form></form>
 {% endif %}
 {% endif %}
 {% endblock %}
