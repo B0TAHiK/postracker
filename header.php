@@ -24,6 +24,7 @@ if ($loggedIN == 0) {
     $result = $db->query($query);
     $charInfo = $db->fetchAssoc($result);
     $groupID = $charInfo[groupID];
+    $_SESSION['id'] = $charInfo[id];
     $query = "SELECT * FROM `groups` WHERE `id` = '$groupID' LIMIT 1";
     $result = $db->query($query);
     $groups = $db->fetchAssoc($result);

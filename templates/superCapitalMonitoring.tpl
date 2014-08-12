@@ -4,7 +4,6 @@
 
 {% block pageName %}Supercapital Monitoring{% endblock %}
 {% block switchButton %}
- {% if loggedIN > 0 %}
 <style> .switch {
         margin-top: -30px;
     }
@@ -15,11 +14,9 @@
     <form action='superCapitalMonitoring.php' method='post' align='right' class='switch'><button type=submit name='showOld' value='old' class="btn btn-default switch">Show old faggots</button></form>
     
 {% endif %}
-{% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if loggedIN > 0 %}
     {% for corp in data %}
         {% if corp.corpName != '' %}
             <div class="panel panel-default">
@@ -59,7 +56,4 @@
             </div>
             {% endif %}
     {% endfor %}
-{% else %}
-    <div class="alert alert-danger" role="alert">Access denied. Autorization required.</div>
-{% endif %}
 {% endblock %}

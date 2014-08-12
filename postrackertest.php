@@ -22,9 +22,14 @@ and open the template in the editor.
             "rfType" => "1",
             "authorID" => "9"
         );
-        $id = 5;
-        $dbDump = $postracker->addToDB($id, $insert);
-        var_dump($dbDump);
+        $id = array(
+            'id' => 2,
+            'id' => 8,
+            'ownerID' => 'CHANGE'
+        );
+//        $dbDump = $postracker->addToDB($id, $insert);
+//        $db->delete('postracker', $id, 'OR');
+        var_dump($db);
         ?>
     </body>
 </html>

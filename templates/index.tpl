@@ -4,7 +4,6 @@
 
 {% block pageName %}POS Monitor{% endblock %}
 {% block switchButton %}
- {% if loggedIN > 0 %}
 <style> .switch {
         margin-top: -30px;
         float: right;
@@ -15,11 +14,9 @@
 {% else %}
     <form action='index.php' method='post' align='right' class='switch'><input type=hidden name='anchored' value='old'><button type=submit class="btn btn-default">Show Anchored POSes</button></form></form>
 {% endif %}
-{% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if loggedIN > 0 %}
     <script type="text/javascript">
     $(document).ready(function(){
         $(".table a").popover({
@@ -65,10 +62,10 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if table.numSilo > 1 %}
-                                <a class="btn btn-{{table.popoverType}}" data-toggle="popover" title="Silos" data-content="
+                                {% if table.numSilo > 0 %}
+                                <a class="btn btn-{{table.popoverType}}" data-toggle="popover" data-content="
                                         {% for silo in table %}
-                                        {% if silo.mmname is defined %}
+                                        {% if silo.quantity is defined %}
                                         <b>{{silo.mmname}}</b>:<br>
                                         {{silo.quantity}}/{{silo.maximum}}<br>
                                         {% endif %}
@@ -85,7 +82,4 @@
             </table>
         </div>
     {% endfor %}
-{% else %}
-    <div class="alert alert-danger" role="alert">Access denied. Autorization required.</div>
-{% endif %}
 {% endblock %}

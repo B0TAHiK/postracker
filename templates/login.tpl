@@ -1,4 +1,4 @@
-{% extends "base.tpl" %}
+{% extends "baseNoAuth.tpl" %}
 
 {% block title %}Log in{% endblock %}
 
@@ -16,20 +16,29 @@
                     setTimeout("document.location.href='/index.php'", delay);
                 </script>
         {% else %}
+        {% set errorClass = 'has-error' %}
             <div class="alert alert-danger" role="alert">Wrong login or password!</div>
         {% endif %}
     {% endif %}
-            <form action="login.php" method="post" class="login" style="width: 33%;margin: 0 auto;">
-            <div class="form-group" width="25%">
-                <label for="inputEmail">Email</label>
-                <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email">
-            </div>
+            <form action="login.php" method="post" class="form-horizontal" style="width: 45%;margin: 0 auto;">
             <div class="form-group">
-                <label for="inputPassword">Password</label>
-                <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+                <label for="inputEmail" class="col-sm-2 control-label">Email:</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email">
+                </div>
+            </div>
+            <div class="form-group {{errorClass}}">
+                <label for="inputPassword" class="col-sm-2 control-label">Password:</label>
+                 <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+                </div>
             </div>
             <input type=hidden name="go" value="sent">
-            <button type="submit" class="btn btn-primary" id="submit">Login</button>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default" id="submit">Sign in</button>
+                </div>
+            </div>
             </form>
 {% endif %}
 {% endblock %}

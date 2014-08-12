@@ -18,10 +18,45 @@ class db {
     private function __construct($config) {
         $this->config = $config;
     }
-    function __destruct() {
-        
+    
+    /**
+     * 
+     * @param array $data
+     * @param string $separator
+     * @return string
+     */
+    
+    private function dataAsQuery($data, $separator = ",") {
+        $query = '';
+        $i=0;
+        foreach ($data as $key => $value) {
+            $i++;
+            if ($i === count($data)) {
+                $query .= "`$key` = '$this->sanitizeString($value)'";
+            } else {
+                $query .= "`$key` = '$this->sanitizeString($value)' " . $separator . " ";
+            }
+        }
+        return $query;
     }
-
+    
+    /**
+     * 
+     * @param string $var
+     * @return string
+     */
+    
+    private function sanitizeString($var) {
+        $var = mysql_real_escape_string($var);
+        return $var;
+    }
+    
+    /**
+     *
+     * @return object
+     * @throws mysqli_sql_exception
+     */
+    
     public function openConnection() {
         try {
             $this->connection = mysqli_connect($this->config->hostname, $this->config->username, $this->config->password);
@@ -34,6 +69,11 @@ class db {
         }
     }
 
+    /**
+     *
+     * @return \Exception
+     */
+    
     public function closeConnection() {
         try {
             mysqli_close($this->connection);
@@ -42,6 +82,12 @@ class db {
         }
     }
 
+    /**
+     *
+     * @param string $query
+     * @return string|\Exception
+     */
+    
     public function query($query) {
         try {
             if(empty($this->connection)) {
@@ -72,60 +118,64 @@ class db {
         }
     }
     
-    public function lastQuery() {
-        return $this->lastQuery;
-    }
-    
-    public function pingServer() {
-        try {
-            if(!mysqli_ping($this->connection)) {
-                return false;
-            } else {
-                return true;
-            }
-        } catch (Exception $e) {
-            return $e;
-        }
-    }
-    
+    /**
+     *
+     * @param string $table
+     * @param array $data
+     * @return \Exception
+     */
     public function insert($table, $data) {
         try {
             $query = "INSERT INTO `$table` SET ";
-            $i = 0;
-            foreach ($data as $key => $value) {
-                $i++;
-                if ($i === count($data)) {
-                    $query .= "`$key` = '$value'";
-                } else {
-                    $query .= "`$key` = '$value', ";
-                }
-            }
+            $query .= $this->dataAsQuery($data);
             return $this->query($query);
         } catch (Exception $e) {
             return $e;
         }
     }
     
-    public function update($table, $id, $data) {
+    /**
+     *
+     * @param string $table
+     * @param array $condition
+     * @param array $data
+     * @return \Exception
+     */
+    public function update($table, $condition, $data) {
         try {
-            $keySearch = key($id);
-            $keyValue = implode($id);
             $query = "UPDATE `$table` SET ";
-            $i = 0;
-            foreach ($data as $key => $value) {
-                $i++;
-                if ($i === count($data)) {
-                    $query .= "`$key` = '$value'";
-                } else {
-                    $query .= "`$key` = '$value', ";
-                }
-            }
+            $keySearch = key($condition);
+            $keyValue = $this->sanitizeString(implode($condition));
+            $query .= $this->dataAsQuery($data);
             $query .= " WHERE `$keySearch` = '$keyValue'";
             return $this->query($query);
         } catch (Exception $e) {
             return $e;
         }
     }
+    
+    /**
+     *
+     * @param string $table
+     * @param array $condition
+     * @param array $logic
+     * @return \Exception
+     */
+    
+    public function delete($table, $condition, $logic = 'AND') {
+        try {
+            $query = "DELETE FROM `$table` WHERE ";
+            $query .= $this->dataAsQuery($condition, $logic);
+            return $this->query($query);
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+    
+    /**
+     * 
+     * @return \Exception|boolean
+     */
     
     public function hasRows() {
         try {
@@ -138,7 +188,13 @@ class db {
             return $e;
         }
     }
-        
+    
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
+    
     public function countRows($result) {
         try {
             return mysqli_num_rows($result);
@@ -146,6 +202,12 @@ class db {
             return $e;
         }            
     }
+    
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
     
     public function affectedRows($result) {
         try {
@@ -155,6 +217,12 @@ class db {
         }            
     }
     
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
+    
     public function fetchAssoc($result) {
         try {
             return mysqli_fetch_assoc($result);
@@ -162,6 +230,12 @@ class db {
             return $e;
         }
     }
+    
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
     
     public function fetchArray($result) {
         try {
@@ -171,6 +245,12 @@ class db {
         }
     }
 
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
+    
     public function fetchRow($result) {
         try {
             return mysqli_fetch_row($result);
@@ -178,6 +258,13 @@ class db {
             return $e;
         }
     }
+    
+    /**
+     * 
+     * @param object $result
+     * @param int $i
+     * @return \Exception
+     */
     
     public function getMysqlResult($result, $i = NULL) {
         try {
@@ -191,7 +278,39 @@ class db {
             return $e;
         }
     }
-  
+    
+    /**
+     * 
+     * @return object
+     */
+    
+    public function lastQuery() {
+        return $this->lastQuery;
+    }
+    
+    /**
+     * 
+     * @return \Exception|boolean
+     */
+    
+    public function pingServer() {
+        try {
+            if(!mysqli_ping($this->connection)) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+    
+    /**
+     * 
+     * @param object $result
+     * @return \Exception
+     */
+    
     public function toArray($result) {
         $results = array();
         try {
@@ -202,16 +321,5 @@ class db {
         } catch (Exception $e) {
             return $e;
         }
-    }
-
-    private function sanitizeString($var) {
-        $var = stripslashes($var);
-        $var = strip_tags($var);
-        return $var;
-    }
-
-    public function sanitizeMySQL($var) {
-        //$var = $this->sanitizeString($var);
-        return $var;
     }
 }
